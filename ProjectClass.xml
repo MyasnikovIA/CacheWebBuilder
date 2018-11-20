@@ -1718,12 +1718,12 @@ object Canvas: HTMLRootCanvas
   Height = 904
   Align = alClient
   TabOrder = 0
-  object HTMLComboBox1: HTMLComboBox
-    Left = 0
-    Top = 0
+  object HTMLEditText1: HTMLEditText
+    Left = 24
+    Top = 48
     Width = 200
     Height = 26
-    Text = 'HTMLComboBox1'
+    Text = 'HTMLEditText1'
     ClassName = ''
     Visible = True
     BackGroundColor = clWhite
@@ -1731,19 +1731,14 @@ object Canvas: HTMLRootCanvas
     FontName = 'Arial'
     FontSize = 12
   end
-  object HTMLMemo1: HTMLMemo
-    Left = 0
-    Top = 28
-    Width = 200
-    Height = 201
-    Text = 'HTMLMemo1fsadfsdfsafsadfsdfsadfsadfas'
-    ClassName = ''
-    Visible = True
-    Resize = none
-    BackGroundColor = clWhite
-    FontColor = clBlack
-    FontName = 'Arial'
-    FontSize = 12
+  object HTMLTimer1: HTMLTimer
+    Interval = 1000
+    InnerHTML.Strings = (
+      '')
+    Enabel = True
+    OnTimer = HTMLTimer1Timer
+    Left = 196
+    Top = 16
   end
 end
 ]]]]><![CDATA[></dfm>
@@ -1762,6 +1757,10 @@ end
 <br>   "CP1251" или "UTF-8"
 Parameter CodePage = "UTF-8";]]></Description>
 <Default>UTF-8</Default>
+</Parameter>
+
+<Parameter name="Language">
+<Expression><![CDATA[$case($e($$GetVersion^%apiOBJ(),$l("Cache Objects Version ")+1,$l("Cache Objects Version ")+4)>2017, 1:"objectscript",:"cache")]]></Expression>
 </Parameter>
 
 <Parameter name="Title">
@@ -2074,7 +2073,7 @@ panel / resize panel / form  </Description>
                 
             }
            // Получаем JS представление Cache класс метода
-           if ClassOref.Methods.GetAt(i).Language="cache" {
+           if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
                    w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function(){",!
                    ; if $d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)){ w "return "}
                    ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
@@ -2095,7 +2094,7 @@ panel / resize panel / form  </Description>
               d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
               ; w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
            }
-           if ClassOref.Methods.GetAt(i).Language="cache" {
+           if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
               ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
               s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
               w " cspHttpServerMethod('"_WEVENT_"',arguments);"
@@ -2390,6 +2389,7 @@ panel / resize panel / form  </Description>
 <Method name="SaveDFM">
 <ClassMethod>1</ClassMethod>
 <Implementation><![CDATA[
+
    if '$isobject(%request.Content) {
 	   w "Error content"
 	   q
@@ -2443,7 +2443,9 @@ panel / resize panel / form  </Description>
 		       s GL2="^oddDEF("""_ClassName_""",""m"","""_Value_""")"  
 		       if '$d(@GL2){
 		          s MethodDestroy=##class(%Dictionary.MethodDefinition).%New(tt.Name_":"_Value)
-                  s MethodDestroy.Language="cache"
+                  s MethodDestroy.Language=##class(%ZDFM.page).#Language
+                  // objectscript
+                  
                   s MethodDestroy.ClassMethod=1
                   s MethodDestroy.WebMethod=1 
                   s MethodDestroy.FormalSpec="args="""""
