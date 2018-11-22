@@ -18,6 +18,10 @@
 
 7) Save and run class
 
+
+
+
+ <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/CtxMenu.png?raw=true"/>
  <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/ImgStud.png?raw=true"/>
  <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/Res.png?raw=true"/>
  
