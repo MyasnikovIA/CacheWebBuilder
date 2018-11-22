@@ -20,7 +20,7 @@
 
 Video installation instructions: https://youtu.be/WZRcpL2r3rc
 
-(https://youtu.be/WZRcpL2r3rc "Everything Is AWESOME")
+[![](http://img.youtube.com/vi/WZRcpL2r3rc/0.jpg)](http://www.youtube.com/watch?v=WZRcpL2r3rc "")
 
  <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/CtxMenu.png?raw=true"/>
  <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/ImgStud.png?raw=true"/>
