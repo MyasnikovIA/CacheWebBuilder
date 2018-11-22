@@ -20,6 +20,9 @@
 
 Video installation instructions: https://youtu.be/WZRcpL2r3rc
 
+
+![youtube video](http://https://youtu.be/WZRcpL2r3rc =800x600)
+
 [![Alt text](https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/ImgStud.png)](https://youtu.be/WZRcpL2r3rc)
 
 [![Little red ridning hood](https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/ImgStud.png)](https://youtu.be/WZRcpL2r3rc "Little red riding hood - Click to Watch!")
