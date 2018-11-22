@@ -17,3 +17,7 @@
 6) Create elements on the form and set their properties. The form supports pasting code. example: #($h)#
 
 7) Save and run class
+
+ <img src="https://github.com/MyasnikovIA/SMWrap2017/blob/master/test.jpg?raw=true"/>
+ <img src="https://github.com/MyasnikovIA/SMWrap2017/blob/master/test2.jpg?raw=true"/>
+ 
