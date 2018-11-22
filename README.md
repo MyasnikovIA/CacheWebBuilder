@@ -18,6 +18,6 @@
 
 7) Save and run class
 
- <img src="https://github.com/MyasnikovIA/SMWrap2017/blob/master/test.jpg?raw=true"/>
- <img src="https://github.com/MyasnikovIA/SMWrap2017/blob/master/test2.jpg?raw=true"/>
+ <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/ImgStud.png?raw=true"/>
+ <img src="https://github.com/MyasnikovIA/CacheWebBuilder/blob/master/Res.png?raw=true"/>
  
