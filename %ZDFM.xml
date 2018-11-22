@@ -1,0 +1,1630 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-22 13:41:39">
+<Class name="%ZDFM.page">
+<Super>%CSP.Page</Super>
+<TimeChanged>64974,42659.873721</TimeChanged>
+<TimeCreated>64964,45915.102647</TimeCreated>
+
+<Parameter name="CodePage">
+<Description><![CDATA[
+<br>   s %response.CharSet="CP1251" 
+<br>   "CP1251" или "UTF-8"
+Parameter CodePage = "UTF-8";]]></Description>
+<Default>UTF-8</Default>
+</Parameter>
+
+<Parameter name="Language">
+<Expression><![CDATA[$case($e($$GetVersion^%apiOBJ(),$l("Cache Objects Version ")+1,$l("Cache Objects Version ")+4)>2017, 1:"objectscript",:"cache")]]></Expression>
+</Parameter>
+
+<Parameter name="Title">
+</Parameter>
+
+<Parameter name="Script">
+</Parameter>
+
+<Parameter name="Style">
+</Parameter>
+
+<Parameter name="Include">
+</Parameter>
+
+<Parameter name="TypeForm">
+<Description>
+panel / resize panel / form  </Description>
+<Default>panel</Default>
+</Parameter>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    /// Подключение класса и интерпритация его как JS библиотек
+    if %request.Get("include","")'=""{
+	   d ..IncludeJsFun()
+	   q 1
+    }
+
+    if %request.Get("LoadDFM","")'=""{
+	   d ..LoadDFM()
+	   q 1
+    }
+	if %request.Get("SaveDFM","")'=""{
+	   d ..SaveDFM()
+	   q 1
+    }
+    
+    if %request.Get("AutoAddSupperClass","")'=""{
+	    s ClassName=%request.Get("ClassName","")
+	    s NameSpace=%request.Get("NameSpace","")
+	    d ..AutoAddSupperClass(NameSpace,ClassName)
+	    q 1
+    }
+    
+    
+	
+ /// Вычитываем тело POST запроса
+	s json=""
+	if $isobject(%request.Content){
+		for { q:%request.Content.AtEnd  s json=json_%request.Content.Read(32000)	      }	
+	}	
+	
+	s ParentClass=""
+    s:$d(%request.CgiEnvs("HTTP_REFERER")) ParentClass= $SYSTEM.CSP.GetClassName(%request.CgiEnvs("HTTP_REFERER"))
+    s:ParentClass="" ParentClass=%request.Get("ParentClass","")
+	s:ParentClass="" ParentClass=##THIS
+	do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(json,,.%override,1)
+	
+    if %override'="" {
+	    s TestWebMethod=0
+	    s ^||WEVENT=%override.GetAt(1)
+        if $l(^||WEVENT,".")'=1  { 
+           S TestWebMethod=1
+        }else{
+            s ^||WEVENT=$lg($$$cspDecode(%session.Key,^||WEVENT),1) 
+            s ^||WEVENT=$p(^||WEVENT,":",1) ; ????
+        }
+        s %method=$p(^||WEVENT,".",$l(^||WEVENT,"."))
+        s %class=$e(^||WEVENT,1,$l(^||WEVENT)-$l(%method)-1)
+        IF TestWebMethod=1 {
+           q:'$d(^oddDEF(%class,"m",%method,51)) 1
+           q:^oddDEF(%class,"m",%method,51)'=1 1
+        }
+        
+        if %class="."{
+          s %class=ParentClass
+        }
+        d ..ExecRunMethod(%override)
+        q 1
+    }	
+	
+	
+	
+	
+	 if ##this'="%ZDFM.page"{	
+	 
+	     s Title=..#Title
+	     s:$l(Title)=0 Title=##this
+	     
+	     &html<<html><head>>
+	     &html<<title>#(Title)#</title><script language="JavaScript" type="text/javascript" src="#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("%ZDFM.page","O","URL"))#.cls"></script>>
+         /// Полключаем библиотеки стиля
+         if $l(..#Style)>0{
+		     for ind=1:1:$l(..#Style,","){     
+	          s stylePath=$tr($p(..#Style,",",ind)," ","")
+	          &html<<link  href="#(stylePath)#"  rel='stylesheet' >>
+   	         }
+ 		 }
+         /// путь к скриптам (перечисляется через запятую)
+         if $l(..#Script)>0{
+		     for ind=1:1:$l(..#Script,","){     
+	          s ScriptPath=$tr($p(..#Script,",",ind)," ","")
+	          &html<
+                 <script language="JavaScript" type="text/javascript" src="#(ScriptPath)#"></script> 
+              >
+   	         }
+		 }
+		 /// Подключаем JS библиотеки
+         if $l(..#Include)>0{
+		     for ind=1:1:$l(..#Include,","){     
+	          s ClassNameInclude=$tr($p(..#Include,",",ind)," ","")
+	          &html<
+                   <script language="JavaScript" type="text/javascript" src="#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("%ZDFM.page","O","URL"))#.cls?include=#($zcvt(ClassNameInclude,"O","URL"))#"></script> 
+              >
+   	         }
+		 }
+		 k ^%deb
+         ; Поиск Xdata с формой DFM 
+         s ClassName=##This,XdataName="Form"
+         s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""",21)"  
+         if $d(@GL){
+            s lineNum="",lineNum=$o(@GL@(lineNum))
+            if lineNum'="" s lineNum=$o(@GL@(lineNum))
+            if lineNum'=""{
+	            s line=@GL@(lineNum)
+	            s line=$p(line,": ",2)
+	            // Дописать  подключение библиотек, в зависимости от того, какого класса Форма
+	            if line="HTMLRootCanvasPanel" ; %ZDFM.Component.HTMLRootCanvasPanel 
+	            if line="HTMLRootCanvas"      ; %ZDFM.Component.HTMLRootCanvas
+	            if line="TRootForm"           ; %ZDFM.Component.TRootForm
+	            //но можно это реализовать в шаблонах классов
+            }
+         }
+         &html<</head>>
+         
+         if $d(@GL){  w ##class(%ZDFM.page).ParseDFM(ClassName_":"_XdataName)  }
+	     d ..OnCreate()
+         
+	     &html<</html>>
+	     q 1
+	 }
+	 
+	
+	   k filtr
+	   d ..readJSFunctionFromCacheClass("%ZDFM.page")
+	   s filtr("%ZDFM.page")=1
+	   w ! &js<var cspHttpServerMethod=SendServer; >
+	  
+	
+       s ClassCSP=ParentClass
+       for ind=1:1:$l(ClassCSP,","){
+	      d $system.OBJ.GetDependencies($p(ClassCSP,",",ind),.included)
+          s ClassParentTmp=""
+          for {
+            s ClassParentTmp=$o(included(ClassParentTmp))
+            q:ClassParentTmp=""
+            continue:$d(filtr(ClassParentTmp))
+            d ..readJSFunctionFromCacheClass(ClassParentTmp)
+            s filtr(ClassParentTmp)=1
+          } 
+	   }	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="OnCreate">
+<ClassMethod>1</ClassMethod>
+</Method>
+
+<Method name="OnPreHTTP">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Library.Boolean</ReturnType>
+<Implementation><![CDATA[
+	
+	
+	 if %request.Get("LoadDFM","")'=""{
+		 // Do %response.SetHeader("Content-Type","text/plain")   
+		 Do %response.SetHeader("Content-Type","application/javascript")   
+		 q 1
+	 }
+	 
+	 if %request.Get("SaveDFM","")'=""{
+		 // Do %response.SetHeader("Content-Type","text/plain")   
+		 Do %response.SetHeader("Content-Type","application/javascript")   
+		 q 1
+	 }
+	 
+	 
+	 
+	 
+     if ##this'="%ZDFM.page"{ 
+        Do %response.SetHeader("Content-Type","text/html")   
+        q 1 
+      }
+     if %request.Get("cspIntRunMethod",0)=1 {
+	     if %response.ContentType="text/html" {
+            Do %response.SetHeader("Content-Type","text/plain")   
+	     }
+         q 1   
+     }
+     Do %response.SetHeader("Content-Type","application/javascript")   
+     q 1
+]]></Implementation>
+</Method>
+
+<Method name="IncludeJsFun">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	   s ClassCSP=%request.Get("include","")
+  	   s ClassCSP=$tr(ClassCSP," ","")
+       k filtr
+	   for ind=1:1:$l(ClassCSP,","){
+          // Если класс есть, тогда интерпритируем 
+	      if $zObjClassMethod("%CompiledClass","%ExistsId",$p(ClassCSP,",",ind))=1 {
+	             d $system.OBJ.GetDependencies($p(ClassCSP,",",ind),.included)
+                 s ClassParentTmp=""
+                 for {
+                    s ClassParentTmp=$o(included(ClassParentTmp))
+                    q:ClassParentTmp=""
+                    continue:$d(filtr(ClassParentTmp))
+                    d ..readJSFunctionFromCacheClass(ClassParentTmp)
+                    s filtr(ClassParentTmp)=1
+                } 
+	     }else{
+		    // иначе проверяем есть ли такой пакет, и добавляем весь пакет
+		    s ClassTmpPacket=""
+		    for {
+		         s ClassTmpPacket=$o(^oddDEF(ClassTmpPacket))
+		         q:ClassTmpPacket=""  
+		         if $e(ClassTmpPacket,1,$l($p(ClassCSP,",",ind)))=$p(ClassCSP,",",ind){
+ 	                 d $system.OBJ.GetDependencies(ClassTmpPacket,.included)
+                     s ClassParentTmp=""
+                     for {
+                        s ClassParentTmp=$o(included(ClassParentTmp))
+                        q:ClassParentTmp=""
+                        continue:$d(filtrObj(ClassParentTmp))
+                        d ..readJSFunctionFromCacheClass(ClassParentTmp)
+                        s filtrObj(ClassParentTmp)=1
+                     } 
+		         }
+		    }  
+	     }
+	   }
+]]></Implementation>
+</Method>
+
+<Method name="readJSFunctionFromCacheClass">
+<Description><![CDATA[
+<pre>
+
+Варианты параметров классов 
+ 1) [ Language = cache, WebMethod ]
+ 2) [ Language = javascript, WebMethod ]
+
+Пример классов , которые будут интерпритированы в JS функции:
+    ClassMethod test2()as %String [ Language = cache, WebMethod ]{ zw  q ""}
+    ClientMethod test3() [ Language = javascript, WebMethod ]{    alert('test3()');}
+    Property cspXMLHttp As %String [ ServerOnly = 1 ];
+    Property cspUseGetMethod As %Boolean [ InitialExpression = 0, ServerOnly = 1 ];
+    Property cspMozilla As %Boolean [ InitialExpression = "nill", ServerOnly = 1 ];
+   
+</pre>
+ <h2>Переписать  %Library.ClassDefinition на  <h2>]]></Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ParentClassName="",MethodName="",DrawDescript=1</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+     s onEventFun=",onblur,onerror,onfocus,onload,onresize,onscroll,onbeforeunload,onhashchange,onlanguagechange,onmessage,onoffline,ononline,onpagehide,onpageshow,onpopstate,onrejectionhandled,onstorage,onunhandledrejection,onunload,onabort,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontextmenu,oncuechange,ondblclick,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onloadeddata,onloadedmetadata,onloadstart,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onpause,onplay,onplaying,onprogress,onratechange,onreset,onseeked,onseeking,onselect,onshow,onstalled,onsubmit,onsuspend,ontimeupdate,ontoggle,onvolumechange,onwaiting,onauxclick,ongotpointercapture,onlostpointercapture,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerup,onbeforecopy,onbeforecut,onbeforepaste,oncopy,oncut,onpaste,onsearch,onselectstart,onwheel,onwebkitfullscreenchange,onwebkitfullscreenerror"
+     s ClassOref=##class(%ClassDefinition).%OpenId(ParentClassName)
+     if ClassOref {
+       s ConstructMethod=$p(ParentClassName,".",$l(ParentClassName,"."))
+       s ConstructMethodIndex=""
+       s count=ClassOref.Methods.Count()
+       for i=1:1:count {
+            if (MethodName=""){
+               continue:$l(ClassOref.Methods.GetAt(i).Name,"OnPage")'=1
+               continue:ClassOref.Methods.GetAt(i).Name="OnPreHTTP"
+               continue:ClassOref.Methods.GetAt(i).Name="OnPostHTTP"
+               continue:ClassOref.Methods.GetAt(i).Name="getLibOne"
+               continue:ClassOref.Methods.GetAt(i).Name="GetJSMethodFromClientMethod"
+               continue:ClassOref.Methods.GetAt(i).Name="readJSFunctionFromCacheClass"
+            }else{
+                continue:ClassOref.Methods.GetAt(i).Name'=MethodName   
+            }
+           /// [ ServerOnly = 1 ]
+           // continue:'$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,59))
+           // continue:^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,59)'=1
+           
+           /// [ WebMethod ]
+           continue:'$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,51))
+           continue:^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,51)'=1
+          
+          if $ZCVT(ClassOref.Methods.GetAt(i).Name,"L")=$ZCVT(ConstructMethod,"L"){
+             s ConstructMethodIndex=i
+             continue    
+          }
+          
+          if DrawDescript=1 {
+             if $l(ClassOref.Methods.GetAt(i).Description)>0,ParentClassName'=##this{
+                w !,"/*",!
+                w $replace(ClassOref.Methods.GetAt(i).Description,"*/","-/-")
+                w !,"*/"
+             }
+          }
+          // Получаем JS представление Cache клиент метода
+           if ClassOref.Methods.GetAt(i).Language="javascript" {
+               w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function("
+               s param=ClassOref.Methods.GetAt(i).FormalSpec
+               for ind=1:1:$l(param,","){
+                   s subParam=$p(param,",",ind)
+                   s subParam=$p(subParam,":",1)
+                   s subParam=$p(subParam,"=",1)
+                   w:ind'=1 ","
+                   w subParam
+               }
+               w "){",!
+                 d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+                 // w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+                 // w ClassOref.Methods.GetAt(i).Code
+                 w !,"};"
+                
+            }
+           // Получаем JS представление Cache класс метода
+           if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
+                   w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function(){",!
+                   ; if $d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)){ w "return "}
+                   ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
+                   s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
+                  if '$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)) {
+                        &js< try { var res=cspHttpServerMethod('#(WEVENT)#',arguments);    eval(res); }catch (e) { console.log(res);  return res}>
+                  } Else {
+                     w "   return cspHttpServerMethod('"_WEVENT_"',arguments);"
+                  }
+                  w !,"};"
+           }
+                
+         }
+         // После отрисовки функций, создаем конструктор( если конечно он встретился ранее)
+         if ConstructMethodIndex'="" {
+           s i=ConstructMethodIndex
+           if ClassOref.Methods.GetAt(i).Language="javascript" {
+              d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+              ; w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+           }
+           if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
+              ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
+              s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
+              w " cspHttpServerMethod('"_WEVENT_"',arguments);"
+           }
+         }
+       }
+       q ""
+]]></Implementation>
+</Method>
+
+<Method name="ExecFragCode">
+<Description>
+Метод разбики исходного текста на Cache` код и HTML текст</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+     q:SrcCode="" ""
+     q:Beg="" ""   
+     q:End="" ""
+     q:$l(SrcCode,Beg)=1 SrcCode
+     q:$l(SrcCode,End)=1 SrcCode
+     s Res=""
+     for {
+          s HtmlFrag=$e(SrcCode,1,$l($p(SrcCode,Beg,1)) ) 
+          s SrcCode=$e(SrcCode,$l(HtmlFrag)+1+$l(Beg),$l(SrcCode) ) 
+          s CodeFrag=$e(SrcCode,1, $l($p(SrcCode,End,1)) ) 
+          s SrcCode=$e(SrcCode,$l(CodeFrag)+1+$l(End),$l(SrcCode) ) 
+          s Res=Res_HtmlFrag
+          if $l(CodeFrag)>0{
+             TRY {
+                XECUTE ("(argVar) SET argVar="_CodeFrag,  .argVar)
+	            s Res=Res_argVar
+             } CATCH{ 
+                s Res=Res_Code
+             }
+          }
+          q:SrcCode=""
+      }          
+      q Res
+]]></Implementation>
+</Method>
+
+<Method name="WriteFragCode">
+<Description>
+Удаление текста внутри тэгов</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",WriteFragCodeBeg="",WriteFragCodeEnd=""</FormalSpec>
+<ProcedureBlock>0</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+     q:SrcCode="" ""
+     q:WriteFragCodeBeg="" ""   
+     q:WriteFragCodeEnd="" ""
+     q:$l(SrcCode,WriteFragCodeBeg)=1 SrcCode
+     q:$l(SrcCode,WriteFragCodeEnd)=1 SrcCode
+     s Res=""
+      for {
+          s HtmlFrag=$e(SrcCode,1,$l($p(SrcCode,WriteFragCodeBeg,1)) ) 
+          s Res=Res_HtmlFrag  
+          s SrcCode=$e(SrcCode,$l(HtmlFrag)+1+$l(WriteFragCodeBeg),$l(SrcCode) ) 
+          s CodeFrag=$e(SrcCode,1, $l($p(SrcCode,WriteFragCodeEnd,1)) ) 
+          s SrcCode=$e(SrcCode,$l(CodeFrag)+1+$l(WriteFragCodeEnd),$l(SrcCode) ) 
+          if $l(CodeFrag)>0{
+               TRY {
+                 XECUTE ("(out) SET out="_CodeFrag,.outCode)
+		         s Res=Res_outCode
+               } CATCH{
+                 s Res=Res_WriteFragCodeBeg_CodeFrag_WriteFragCodeEnd	        
+               }                 
+	      }
+          q:SrcCode=""
+      }
+      q Res
+]]></Implementation>
+</Method>
+
+<Method name="ClearFragCode">
+<Description>
+Удаление текста внутри тэгов</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
+<ProcedureBlock>0</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+     q:SrcCode="" ""
+     q:Beg="" ""   
+     q:End="" ""
+     q:$l(SrcCode,Beg)=1 SrcCode
+     q:$l(SrcCode,End)=1 SrcCode
+      s Res=""
+      for {
+          s HtmlFrag=$e(SrcCode,1,$l($p(SrcCode,Beg,1)) ) 
+          s SrcCode=$e(SrcCode,$l(HtmlFrag)+1+$l(Beg),$l(SrcCode) ) 
+          s CodeFrag=$e(SrcCode,1, $l($p(SrcCode,End,1)) ) 
+          s SrcCode=$e(SrcCode,$l(CodeFrag)+1+$l(End),$l(SrcCode) ) 
+          if $l(CodeFrag)>0{
+              if $l($tr(CodeFrag," ",""))=$l(CodeFrag){
+                 s Res=Res_HtmlFrag
+              }else{
+                 s Res=Res_HtmlFrag_Beg_CodeFrag_End	        
+              }
+          }else{
+	        s Res=Res_HtmlFrag  
+          }
+          q:SrcCode=""
+      }
+      q Res
+]]></Implementation>
+</Method>
+
+<Method name="AddParam">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>arg</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+   SET x=arg
+   XECUTE ("(out) SET out="_x,  .argVar)
+   q argVar
+]]></Implementation>
+</Method>
+
+<Method name="ReplaceFragText">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
+<ProcedureBlock>0</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+      q:SrcCode="" SrcCode  
+      q:Beg="" SrcCode  
+      q:End="" SrcCode
+      q:$l(SrcCode,Beg)=1 SrcCode
+      q:$l(SrcCode,End)=1 SrcCode
+      n html,resTxtReplaceFragText,HtmlFrag,classname,methodReplaceFragText,argTmp,IndexArgumentReplaceFragText
+      s resTxtReplaceFragText=""
+      s html=SrcCode
+      for {
+          s HtmlFrag=$e(SrcCode,1,$l($p(SrcCode,Beg,1)) ) 
+          s resTxtReplaceFragText=resTxtReplaceFragText_HtmlFrag
+          s SrcCode=$e(SrcCode,$l(HtmlFrag)+1+$l(Beg),$l(SrcCode) ) 
+          s CodeFrag=$e(SrcCode,1, $l($p(SrcCode,End,1)) ) 
+          s SrcCode=$e(SrcCode,$l(CodeFrag)+1+$l(End),$l(SrcCode) ) 
+          if $l(CodeFrag)>0{
+	          if $l(CodeFrag,"(")>1,$l(CodeFrag,")")>1{
+	             s ClassMethodReplaceFragText=$p(CodeFrag,"(",1)
+	             s argsReplaceFragText=$e(CodeFrag,$l(ClassMethodReplaceFragText)+2,$l(CodeFrag)-1)
+	             s argsReplaceFragTextLB=$LfS(argsReplaceFragText)
+	             s argFunReplaceFragText=$ll(argsReplaceFragTextLB)
+	             for IndexArgumentReplaceFragText=1:1:$ll(argsReplaceFragTextLB)  d ..AddParamClassMethod(IndexArgumentReplaceFragText,argsReplaceFragTextLB,.argTmp) s argFunReplaceFragText(IndexArgumentReplaceFragText)=argTmp 
+	             s ClassMethodReplaceFragText=$tr(ClassMethodReplaceFragText," ","")
+                 s methodReplaceFragText=$p(ClassMethodReplaceFragText,".",$l(ClassMethodReplaceFragText,"."))
+                 s classname=$e(ClassMethodReplaceFragText,1,$l(ClassMethodReplaceFragText)-$l(methodReplaceFragText)-1)
+                 if classname="."{s classname=##this}
+                 if $zObjClassMethod("%CompiledClass","%ExistsId",classname)=1, $System.CLS.IsMthd(classname,methodReplaceFragText) {
+                    s resTxtReplaceFragText=resTxtReplaceFragText_""_$zObjClassMethod(classname,methodReplaceFragText,argFunReplaceFragText...)
+	             }
+	          }else{
+		        d ..AddParamClassMethod(1,$lb(CodeFrag),.argTmp) 
+		        s resTxtReplaceFragText=resTxtReplaceFragText_argTmp   
+	          }
+          }
+        q:SrcCode=""
+      }
+      q resTxtReplaceFragText
+]]></Implementation>
+</Method>
+
+<Method name="AddParamClassMethod">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>IndexArgumentReplaceFragText,argsReplaceFragTextLB,argTmp=""</FormalSpec>
+<ProcedureBlock>0</ProcedureBlock>
+<Implementation><![CDATA[
+   try{	
+     XECUTE " SET argTmp="_$lg(argsReplaceFragTextLB,IndexArgumentReplaceFragText)
+   }CATCH {
+	 s argTmp="#("_$lg(argsReplaceFragTextLB,IndexArgumentReplaceFragText)_")#"
+   }
+]]></Implementation>
+</Method>
+
+<Method name="ExecFrag">
+<Description>
+Метод разбики исходного текста на Cache` код и HTML текст</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
+<Implementation><![CDATA[
+     q:SrcCode=""
+     q:Beg=""
+     q:End=""
+     q:$l(SrcCode,Beg)=1 SrcCode
+     q:$l(SrcCode,End)=1 SrcCode
+     for ind=1:1:$l(SrcCode,End){
+        s tmp=$p(SrcCode,End,ind)
+        s Html=$p(tmp,Beg,1)
+        s Code=$p(tmp,Beg,2)
+        w Html
+        TRY {
+           x Code
+        } CATCH ErrorHandle { 
+           zw ErrorHandle 
+        }
+     }
+]]></Implementation>
+</Method>
+
+<Method name="ExecRunMethod">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override:%Library.ListOfDataTypes</FormalSpec>
+<Implementation><![CDATA[
+     Set count=override.Count()-1
+     set args=count
+     s numArg=0
+     for j=2:1:override.Count(){
+ 	    s numArg=numArg+1
+        set args(numArg) = $zcvt(override.GetAt(j),"i","UTF8")
+     }
+     if '$d(^oddDEF(%class,"m",%method,70)) {
+        if '$d(^oddDEF(%class,"m",%method,42)) {
+           do $classmethod(%class, %method, args...)
+        } Else {
+            w $classmethod(%class, %method, args...)
+        }
+     }else{
+        if $d(^oddDEF(%class,"m",%method,30)){
+          for ind=1:1:^oddDEF(%class,"m",%method,30){
+             w:ind'=1 $c(13,10)
+              ; d ..ExecFrag(^oddDEF(%class,"m",%method,30,ind),"/*(",")*/")
+              s line=^oddDEF(%class,"m",%method,30,ind)
+              s line=..ReplaceFragText(line,"/*(",")*/")
+              s line=..ReplaceFragText(line,"#(",")#")
+              w line
+          }
+        }
+     }
+     q
+]]></Implementation>
+</Method>
+
+<Method name="SendServer">
+<FormalSpec>MethodName</FormalSpec>
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+    var arr=new Array();
+    if ((''+SendServer.arguments[1])=='[object Arguments]'){
+       arr.push(SendServer.arguments[0]);     
+       for(var ind in SendServer.arguments[1]){if (SendServer.arguments[1][ind]==undefined){continue;} arr.push(SendServer.arguments[1][ind]); }   
+    }else{
+       for(var ind in SendServer.arguments){if (SendServer.arguments[ind]==undefined){continue;} arr.push(SendServer.arguments[ind]); }   
+    }
+    var requestSendServer = new XMLHttpRequest();
+    requestSendServer.open('POST', '/*(   w $SYSTEM.CSP.GetDefaultApp($ZU(5))_"/"_$zcvt("%ZDFM.page","O","URL")_".cls"  )*/', false);
+    requestSendServer.send(JSON.stringify(arr));  
+    requestSendServer.ontimeout = function (e) {
+          alert('Время ожидания ответа вышло!!!!');
+    }
+    if (requestSendServer.status !== 200) {
+        return {"error":requestSendServer.status}
+    }
+    return requestSendServer.responseText;
+]]></Implementation>
+</Method>
+
+<Method name="LoadDFM">
+<Description>
+d ##class(%ZDFM.page).LoadDFM("%ZDFM.demo.demo3:Form")</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>NameObj=""</FormalSpec>
+<Implementation><![CDATA[
+   s:NameObj="" NameObj = ##This_":Form"
+   if $l(NameObj,":")=1,$e(NameObj,1,2)'=".."{  s Name=".."_NameObj  }
+   if $e(NameObj,1,2)=".." {  s ClassName=##This,XdataName=$e(NameObj,3,$l(NameObj))
+   }else{                  s ClassName=$p(NameObj,":",1),XdataName=$p(NameObj,":",2)  }
+   s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""",21)"  
+   s GlIndex="",CountLine=0
+   
+   for { 
+       s GlIndex=$o(@GL@(GlIndex))
+       q:GlIndex=""  
+       continue:GlIndex=1  
+       q:GlIndex=@GL   
+       s val=@GL@(GlIndex)
+       s CountLine=CountLine+1
+       w:CountLine'=1 $c(13,10)
+       if $l(val,"TModalForm")>1{ s val=   $replace(val,"TModalForm","TForm3") }
+       if $l(val,"TCanvas")>1{ s val=   $replace(val,"TCanvas","TNotifyPanel") }
+       if $l(val,"TCanvasPanel")>1{ s val=   $replace(val,"TCanvasPanel","TTestPanel") }
+       w val
+   }
+   q
+]]></Implementation>
+</Method>
+
+<Method name="SaveDFM">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+
+   if '$isobject(%request.Content) {
+	   w "Error content"
+	   q
+   }
+   s NameObj = ##This_":Form"
+   if $l(NameObj,":")=1,$e(NameObj,1,2)'=".."{  s Name=".."_NameObj  }
+   if $e(NameObj,1,2)=".." {  s ClassName=##This,XdataName=$e(NameObj,3,$l(NameObj))
+   }else{                  s ClassName=$p(NameObj,":",1),XdataName=$p(NameObj,":",2)  }
+   s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""")"  
+  	
+   if $zObjClassMethod("%CompiledClass","%ExistsId",ClassName)=0{
+      s tt=##class(%Dictionary.ClassDefinition).%New(ClassName)
+      s tt.Super="%ZDFM.page"
+   }else{
+      s tt=##class(%Dictionary.ClassDefinition).%OpenId(ClassName)
+   }
+   
+   s Description=tt.Description
+   s tt.Description=tt.Description_" "
+   d tt.%Save()
+   s tt.Description=$e(tt.Description,$l(tt.Description)-1,$l(tt.Description))
+   d tt.%Save()
+   s tt.Description=$ZDT($h)
+   k @GL
+   s CountLine=0
+   s tt.Description=Description
+   d tt.%Save()	
+   s paramName="Form"
+   s param1=##class(%Dictionary.XDataDefinition).%New(tt.Name_"."_paramName)
+   s param1.Name=paramName
+   d param1.Data.WriteLine("<dfm><![CDATA[")
+   for { 
+       q:%request.Content.AtEnd  
+       s frag=%request.Content.Read(16000)	
+       s frag=$SYSTEM.Encryption.Base64Decode(frag)
+       for IndLine=1:1:$l(frag,$c(13,10)){
+         s line=$p(frag,$c(13,10),IndLine)
+         if IndLine'=1 d param1.Data.Write($c(13,10))
+         if $l(line,"TForm3")>1{ s line=   $replace(line,"TForm3","TModalForm") }
+         if $l(line,"TNotifyPanel")>1{ s line=   $replace(line,"TNotifyPanel","TCanvas") }
+         if $l(line,"TTestPanel")>1{ s line=   $replace(line,"TTestPanel","TCanvasPanel") }
+         d param1.Data.Write(line)
+         
+         s Name=$p(line," = ",1)
+         s Name=$TR(Name," ","")
+         s Value=$p(line," = ",2)
+         s nam=line
+         if $e(Name,1,2)="On"{
+	        if $l(Value,".")=1{
+		       S Value=$TR(Value," ","")
+		       s GL2="^oddDEF("""_ClassName_""",""m"","""_Value_""")"  
+		       if '$d(@GL2){
+		          s MethodDestroy=##class(%Dictionary.MethodDefinition).%New(tt.Name_":"_Value)
+                  s MethodDestroy.Language=##class(%ZDFM.page).#Language
+                  // objectscript
+                  
+                  s MethodDestroy.ClassMethod=1
+                  s MethodDestroy.WebMethod=1 
+                  s MethodDestroy.FormalSpec="args="""""
+                  d MethodDestroy.Implementation.WriteLine("  q ")
+                  d tt.Methods.Insert(MethodDestroy)
+                  d tt.%Save()
+		       }
+	        }  
+         }
+         
+       }
+    }
+   d param1.Data.Write("]]]]><![CDATA[></dfm>")
+   d param1.%Save()
+   d tt.XDatas.Insert(param1)
+   s tt.Description=Description
+   d tt.%Save()	
+   Do $system.OBJ.Compile(ClassName,"cuk /checkuptodate=expandedonly")
+   q
+]]></Implementation>
+</Method>
+
+<Method name="EncodeCP1251">
+<Description>
+d ##class(%ZDFM.page).EncodeCP1251(TmpValue)
+!!!!,Переписать, Замена проискодит если код из 4 символов</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>value=""</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+   s cp("#1040")="А",cp("#1041")="Б",cp("#1042")="В",cp("#1043")="Г",cp("#1044")="Д",cp("#1045")="Е",cp("#1046")="Ж",cp("#1047")="З",cp("#1048")="И",cp("#1049")="Й"
+    ,cp("#1050")="К",cp("#1051")="Л",cp("#1052")="М",cp("#1053")="Н",cp("#1054")="О",cp("#1055")="П",cp("#1056")="Р",cp("#1057")="С",cp("#1058")="Т",cp("#1059")="У"
+    ,cp("#1060")="Ф",cp("#1061")="Х",cp("#1062")="Ц",cp("#1063")="Ч",cp("#1064")="Ш",cp("#1065")="Щ",cp("#1066")="Ъ",cp("#1067")="Ы",cp("#1068")="Ь",cp("#1069")="Э"
+    ,cp("#1070")="Ю",cp("#1071")="Я",cp("#1072")="а",cp("#1073")="б",cp("#1074")="в",cp("#1075")="г",cp("#1076")="д",cp("#1077")="е",cp("#1078")="ж",cp("#1079")="з"
+    ,cp("#1080")="и",cp("#1081")="й",cp("#1082")="к",cp("#1083")="л",cp("#1084")="м",cp("#1085")="н",cp("#1086")="о",cp("#1087")="п",cp("#1088")="р",cp("#1089")="с"
+    ,cp("#1090")="т",cp("#1091")="у",cp("#1092")="ф",cp("#1093")="х",cp("#1094")="ц",cp("#1095")="ч",cp("#1096")="ш",cp("#1097")="щ",cp("#1098")="ъ",cp("#1099")="ы"
+    ,cp("#1100")="ь",cp("#1101")="э",cp("#1102")="ю",cp("#1103")="я"
+    ,cp("#39")="'"
+   s TmpValue=value
+   s Res="",Filtr=""
+   for {
+	   q:TmpValue=""   
+	   s TmpValue=$e(TmpValue,$l($p(TmpValue,"#",1))+1,$l(TmpValue) )
+	   q:$l(TmpValue)<4
+	   s symbCode=$e(TmpValue,1,5)
+	   s TmpValue=$e(TmpValue,$l(symbCode)+1,$l(TmpValue))
+	   if '$d(Filtr(symbCode)){
+	      if $d(cp(symbCode)){
+		     s value=$replace(value,"'"_symbCode_"'",cp(symbCode))
+		     s:$l(value,symbCode)>1 value=$replace(value,"'"_symbCode,cp(symbCode))
+		     s:$l(value,symbCode)>1 value=$replace(value,symbCode_"'",cp(symbCode))
+		     s:$l(value,symbCode)>1 value=$replace(value,symbCode,cp(symbCode))
+		     s Filtr(symbCode)=1
+	      }
+	   }
+   }
+   k Filtr,TmpValue
+   q value
+]]></Implementation>
+</Method>
+
+<Method name="IsVisible">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Visible=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[	q $case(Visible,"False":"display:none;",:"")
+]]></Implementation>
+</Method>
+
+<Method name="CalcFontSize">
+<Description>
+ font-size:#(..CalcFontSize(Height,Font.Height))#;</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>arg1=0,arg2=0,Inc=3</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  s res=(0+arg1+arg2)
+  q res*Inc
+]]></Implementation>
+</Method>
+
+<Method name="CalcFontStyle">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>FontStyle=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+  ; FontStyle = [fsBold, fsItalic, fsUnderline, fsStrikeOut]  
+  if FontStyle="" q ""
+  if FontStyle="[]" q ""
+  s FontStyle=$e(FontStyle,2,$l(FontStyle)-1)
+   // http://on-line-teaching.com/css/05_bold_italic.html
+   /// text-decoration: line-through  Создает перечеркнутый текст (пример).
+   /// text-decoration: underline     Устанавливает подчеркнутый текст
+   /// font-style:  oblique курсив
+   /// font-style:  italic - курсив, края текста скруглены
+   /// font-weight: bold жирный 
+   //Атрибуты и значения
+   //  font-family:Tahoma, sans-serif   –   определяет вид и семейство шрифта.
+   //  font-size:13px   –   устанавливает размер шрифта в пикселях или процентах.
+   //  font-style:italic   –   преобразует текст в наклонный (еще его называю курсивным).
+   //  font-variant:small-caps   –   капитель – большие буквы маленького размера.
+   //  font-weight:bold   –   определяет жирный текст.
+   //  letter-spacing:2px   –   дополнительное расстояние между символами в пикселях.
+   //  word-spacing:7px   –   создает дополнительное расстояние между словами в пикселях.
+   //  color:#cc0033   –   определяет цвет текста.
+   //  text-indent:40px   –   устанавливает отступ строки в пикселях или процентах.
+   //  text-decoration:underline   –   выводит подчеркнутый текст.
+   //  text-decoration:overline   –   выводит надчеркнутый текст.
+   //  text-decoration:line-through   –   выводит перечеркнутый текст.
+   //  text-transform:capitalize   –   отображает каждое слово с заглавной буквы.
+   //  text-transform:lowercase   –   преобразует все буквы в маленькие.
+   //  text-transform:uppercase   –   преобразует все буквы в заглавные.
+   //  vertical-align:super   –   отображает текст в верхнем индексе.
+   //  vertical-align:sub   –   отображает текст в нижнем индексе.
+   s res=""
+   s:FontStyle["fsBold" res=res_" font-weight: bold;"
+   s:FontStyle["fsItalic" res=res_" font-style:  italic;"
+   s:FontStyle["fsUnderline" res=res_" text-decoration:underline;"
+   s:FontStyle["fsStrikeOut" res=res_"text-decoration:line-through;"
+   q res
+]]></Implementation>
+</Method>
+
+<Method name="DecodeColor">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>color=""</FormalSpec>
+<Implementation><![CDATA[
+   s color=$tr(color," ","")
+   q:color="clWebSnow" "#FAFAFF"
+   q:color="clWebFloralWhite" "#F0FAFF"
+   q:color="clWebLavenderBlush" "#F5F0FF"
+   q:color="clWebOldLace" "#E6F5FD"
+   q:color="clWebIvory" "#F0FFFF"
+   q:color="clWebCornSilk" "#DCF8FF"
+   q:color="clWebBeige" "#DCF5F5"
+   q:color="clWebAntiqueWhite" "#D7EBFA"
+   q:color="clWebWheat" "#B3DEF5"
+   q:color="clWebAliceBlue" "#FFF8F0"
+   q:color="clWebGhostWhite" "#FFF8F8"
+   q:color="clWebLavender" "#FAE6E6"
+   q:color="clWebSeashell" "#EEF5FF"
+   q:color="clWebLightYellow" "#E0FFFF"
+   q:color="clWebPapayaWhip" "#D5EFFF"
+   q:color="clWebNavajoWhite" "#ADDEFF"
+   q:color="clWebMoccasin" "#B5E4FF"
+   q:color="clWebBurlywood" "#87B8DE"
+   q:color="clWebAzure" "#FFFFF0"
+   q:color="clWebMintcream" "#FAFFF5"
+   q:color="clWebHoneydew" "#F0FFF0"
+   q:color="clWebLinen" "#E6F0FA"
+   q:color="clWebLemonChiffon" "#CDFAFF"
+   q:color="clWebBlanchedAlmond" "#CDEBFF"
+   q:color="clWebBisque" "#C4E4FF"
+   q:color="clWebPeachPuff" "#B9DAFF"
+   q:color="clWebTan" "#8CB4D2"
+   q:color="clWebYellow" "#00FFFF"
+   q:color="clWebDarkOrange" "#008CFF"
+   q:color="clWebRed" "#0000FF"
+   q:color="clWebDarkRed" "#00008B"
+   q:color="clWebMaroon" "#000080"
+   q:color="clWebIndianRed" "#5C5CCD"
+   q:color="clWebSalmon" "#7280FA"
+   q:color="clWebCoral" "#507FFF"
+   q:color="clWebGold" "#00D7FF"
+   q:color="clWebTomato" "#4763FF"
+   q:color="clWebCrimson" "#3C14DC"
+   q:color="clWebBrown" "#2A2AA5"
+   q:color="clWebChocolate" "#1E69D2"
+   q:color="clWebSandyBrown" "#60A4F4"
+   q:color="clWebLightSalmon" "#7AA0FF"
+   q:color="clWebLightCoral" "#8080F0"
+   q:color="clWebOrange" "#00A5FF"
+   q:color="clWebOrangeRed" "#0045FF"
+   q:color="clWebFirebrick" "#2222B2"
+   q:color="clWebSaddleBrown" "#13458B"
+   q:color="clWebSienna" "#2D52A0"
+   q:color="clWebPeru" "#3F85CD"
+   q:color="clWebDarkSalmon" "#7A96E9"
+   q:color="clWebRosyBrown" "#8F8FBC"
+   q:color="clWebPaleGoldenrod" "#AAE8EE"
+   q:color="clWebLightGoldenrodYellow" "#D2FAFA"
+   q:color="clWebOlive" "#008080"
+   q:color="clWebForestGreen" "#228B22"
+   q:color="clWebGreenYellow" "#2FFFAD"
+   q:color="clWebChartreuse" "#00FF7F"
+   q:color="clWebLightGreen" "#90EE90"
+   q:color="clWebAquamarine" "#D4FF7F"
+   q:color="clWebSeaGreen" "#578B2E"
+   q:color="clWebGoldenRod" "#20A5DA"
+   q:color="clWebKhaki" "#8CE6F0"
+   q:color="clWebOliveDrab" "#238E6B"
+   q:color="clWebGreen" "#008000"
+   q:color="clWebYellowGreen" "#32CD9A"
+   q:color="clWebLawnGreen" "#00FC7C"
+   q:color="clWebPaleGreen" "#98FB98"
+   q:color="clWebMediumAquamarine" "#AACD66"
+   q:color="clWebMediumSeaGreen" "#71B33C"
+   q:color="clWebDarkGoldenRod" "#0B86B8"
+   q:color="clWebDarkKhaki" "#6BB7BD"
+   q:color="clWebDarkOliveGreen" "#2F6B55"
+   q:color="clWebDarkgreen" "#006400"
+   q:color="clWebLimeGreen" "#32CD32"
+   q:color="clWebLime" "#00FF00"
+   q:color="clWebSpringGreen" "#7FFF00"
+   q:color="clWebMediumSpringGreen" "#9AFA00"
+   q:color="clWebDarkSeaGreen" "#8FBC8F"
+   q:color="clWebLightSeaGreen" "#AAB220"
+   q:color="clWebPaleTurquoise" "#EEEEAF"
+   q:color="clWebLightCyan" "#FFFFE0"
+   q:color="clWebLightBlue" "#E6D8AD"
+   q:color="clWebLightSkyBlue" "#FACE87"
+   q:color="clWebCornFlowerBlue" "#ED9564"
+   q:color="clWebDarkBlue" "#8B0000"
+   q:color="clWebIndigo" "#82004B"
+   q:color="clWebMediumTurquoise" "#CCD148"
+   q:color="clWebTurquoise" "#D0E040"
+   q:color="clWebCyan" "#FFFF00"
+   q:color="clWebAqua" "#FFFF00"
+   q:color="clWebPowderBlue" "#E6E0B0"
+   q:color="clWebSkyBlue" "#EBCE87"
+   q:color="clWebRoyalBlue" "#E16941"
+   q:color="clWebMediumBlue" "#CD0000"
+   q:color="clWebMidnightBlue" "#701919"
+   q:color="clWebDarkTurquoise" "#D1CE00"
+   q:color="clWebCadetBlue" "#5F9EA0"
+   q:color="clWebDarkCyan" "#008B8B"
+   q:color="clWebTeal" "#808000"
+   q:color="clWebDeepskyBlue" "#00BFFF"
+   q:color="clWebDodgerBlue" "#FF901E"
+   q:color="clWebBlue" "#0000FF"
+   q:color="clWebNavy" "#800000"
+   q:color="clWebDarkViolet" "#D30094"
+   q:color="clWebDarkOrchid" "#CC3299"
+   q:color="clWebMagenta" "#FF00FF"
+   q:color="clWebFuchsia" "#FF00FF"
+   q:color="clWebDarkMagenta" "#8B008B"
+   q:color="clWebMediumVioletRed" "#8515C7"
+   q:color="clWebPaleVioletRed" "#9370DB"
+   q:color="clWebBlueViolet" "#E22B8A"
+   q:color="clWebMediumOrchid" "#D355BA"
+   q:color="clWebMediumPurple" "#DB7093"
+   q:color="clWebPurple" "#800080"
+   q:color="clWebDeepPink" "#9314FF"
+   q:color="clWebLightPink" "#C1B6FF"
+   q:color="clWebViolet" "#EE82EE"
+   q:color="clWebOrchid" "#D670DA"
+   q:color="clWebPlum" "#DDA0DD"
+   q:color="clWebThistle" "#D8BFD8"
+   q:color="clWebHotPink" "#B469FF"
+   q:color="clWebPink" "#CBC0FF"
+   q:color="clWebLightSteelBlue" "#DEC4B0"
+   q:color="clWebMediumSlateBlue" "#EE687B"
+   q:color="clWebLightSlateGray" "#998877"
+   q:color="clWebWhite" "#FFFFFF"
+   q:color="clWebLightgrey" "#D3D3D3"
+   q:color="clWebGray" "#808080"
+   q:color="clWebSteelBlue" "#B48246"
+   q:color="clWebSlateBlue" "#CD5A6A"
+   q:color="clWebSlateGray" "#908070"
+   q:color="clWebWhiteSmoke" "#F5F5F5"
+   q:color="clWebSilver" "#C0C0C0"
+   q:color="clWebDimGray" "#696969"
+   q:color="clWebMistyRose" "#E1E4FF"
+   q:color="clWebDarkSlateBlue" "#8B3D48"
+   q:color="clWebDarkSlategray" "#4F4F2F"
+   q:color="clWebGainsboro" "#DCDCDC"
+   q:color="clWebDarkGray" "#A9A9A9"
+   q:color="clWebBlack" "#000000"	
+   q:color="clNone" "#1FFFFFFF"
+   q:color="clAqua" "#00FFFF"
+   q:color="clBlack" "#000000"
+   q:color="clBlue" "#0000FF"
+   q:color="clCream" "rgb(255,251,240)"
+   q:color="clDkGray" "#808080"
+   q:color="clFuchsia" "#FF00FF"
+   q:color="clGray" "#808080"
+   q:color="clGreen" "#008000"
+   q:color="clLime" "#00FF00"
+   q:color="clLtGray" "#C0C0C0"
+   q:color="clMaroon" "#800000"
+   q:color="clMedGray" "#A0A0A4"
+   q:color="clMoneyGreen" "#C0DCC0"
+   q:color="clNavy" "#000080"
+   q:color="clOlive" "#808000"
+   q:color="clPurple" "rgb(128,0,128)"
+   q:color="clRed" "#FF0000"
+   q:color="clSilver" "#C0C0C0"
+   q:color="clSkyBlue" "#A6CAF0"
+   q:color="clTeal" "#008080"
+   q:color="clWhite" "#FFFFFF"
+   q:color="clYellow" "#FFFF00"
+   q:color="clActiveBorder" ""
+   q:color="clActiveCaption" ""
+   q:color="clAppWorkSpace" "rgb(127,127,127)"
+   q:color="clActiveCaption" ""   
+   q:color="clBackground" ""   
+   q:color="clBtnFace" ""   
+   q:color="clBtnHighlight" ""   
+   q:color="clBtnShadow" "rgb(128,128,128)" 
+   q:color="clBtnText" "#000000"
+   q:color="clCaptionText" "#FFFFFF"
+   q:color="clDefault" "#FFFFFF"
+   q:color="clGradientActiveCaption" "rgb(166,202,240)" 
+   q:color="clGradientInactiveCaption" "rgb(192,192,192)" 
+   q:color="clGrayText" "rgb(128,128,128)" 
+   q:color="clHighlight" "rgb(10,36,106)" 
+   q:color="clHighlightText" "rgb(255,255,255)" 
+   q:color="clHotLight" "rgb(0,0,128)" 
+   q:color="clInactiveBorder" "" 
+   q:color="clInactiveCaption" "rgb(128,128,128)" 
+   q:color="clInactiveCaptionText" "" 
+   q:color="clInfoBk" "rgb(255,255,225)" 
+   q:color="clInfoText" "rgb(0,0,0)" 
+   q:color="clMenu" "rgb(212,208,200)"
+   q:color="clMenuBar" "rgb(212,208,200)"
+   q:color="clMenuHighlight" "rgb(10,36,106)" 
+   q:color="clMenuText" "rgb(0,0,0)" 
+   q:color="clNone" "" 
+   q:color="clScrollBar" "rgb(212,208,200)"
+   q:color="cl3DDkShadow" "rgb(64,64,64)"
+   q:color="cl3DLight" "rgb(212,208,200)"
+   q:color="clWindow" "rgb(255,255,255)" 
+   q:color="clWindowFrame" "rgb(0,0,0)" 
+   q:color="clWindowText" "rgb(0,0,0)" 
+   if $l(color)=7,$e(color,1,1)="$"{
+	 q $tr(color,"$","#")
+   }
+   q "#000000"
+]]></Implementation>
+</Method>
+
+<Method name="CalcCursor">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Cursor="",CursorURL=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+   if $l(CursorURL)>0{
+	 q "cursor: url('"_$ZCVT(CursorURL,"O","URL")_"')"	
+   }
+  // cursor: [url('путь к курсору'),] | [ auto | crosshair | default | e-resize | help | move | n-resize | ne-resize | nw-resize | pointer | progress | s-resize | se-resize | sw-resize | text | w-resize | wait | inherit ]
+  q:Cursor="crDefault" "cursor:default;"
+  q:Cursor="crAppStart" "cursor:progress;"
+  q:Cursor="crArrow" "cursor:progress;"
+  q:Cursor="crCross" "cursor:crosshair;"
+  q:Cursor="crDrag" ""
+  q:Cursor="crHandPoint" "cursor:pointer;"
+  q:Cursor="crHelp" "cursor:help;"
+  q:Cursor="crHourGlass" "cursor:wait;"
+  q:Cursor="crHourGlass" "cursor:wait;"
+  q:Cursor="crHSplit" ""
+  q:Cursor="crIBeam" "cursor:text;"
+  q:Cursor="crMultiDrag" ""
+  q:Cursor="crSizeAll" "cursor:move;"
+  q:Cursor="crSQLWait" "cursor:wait;"
+  q ""
+]]></Implementation>
+</Method>
+
+<Method name="CalcOption">
+<Description>
+ #(##class(%ZDFM.page).CalcOption())#</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Value="",OptionList="",Text=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	s TextCaption=""
+    try{
+	// если в поле находится запрос, тогда выполняем его и заполняем параметры
+          if (($zcvt(Value,"L")["select")&&($zcvt(Value,"L")["from")) ||($zcvt(Value,"L")["call") {
+               s SQLobj=##class(%SQL.Statement).%New()
+               d SQLobj.%Prepare(Value)
+               s DataSet=SQLobj.%Execute()
+               s QMeta=DataSet.%GetMetaData()
+               if QMeta.columnCount=1 {
+                   while DataSet.%Next()
+                   { 
+                     s TextCaption=TextCaption_$c(13,10)_"<option "_$case((DataSet.%GetData(1)=Text),1:" selected='selected'",:"")_" >"_DataSet.%GetData(1)_"</option>"
+                   }
+               }else{
+                   while DataSet.%Next()
+                   { 
+                     s TextCaption=TextCaption_$c(13,10)_"<option value="""_$replace(DataSet.%GetData(1),"""","\""")_"""  "_$case((DataSet.%GetData(2)=Text),1:" selected='selected'",:"")_" >"_DataSet.%GetData(2)_"</option>"
+                   }                   
+               }
+               s QMeta="",SQLobj=""
+               k QMeta,SQLobj
+          }else{
+             for CountOption=1:1:$l(Value,$c(10)){
+	            s OneOption=$p(Value,$c(10),CountOption) 
+                if $l(OneOption,"=")>1 {
+	               s namOpt=$p(OneOption,"=",1)
+	               s valOpt=$e(OneOption,$l(namOpt)+2,$l(OneOption))
+                   s TextCaption=TextCaption_$c(13,10)_"<option value="""_$replace(valOpt,"""","\""")_""" "_$case((namOpt=Text),1:" selected='selected'",:"")_" >"_namOpt_"</option>"
+                }else{
+	                
+                   s TextCaption=TextCaption_$c(13,10)_"<option "_$case((OneOption=Text),1:" selected='selected'",:"")_">"_OneOption_"</option>"
+                }
+             }
+          }
+     }CATCH exp {
+       s TextCaption=$c(13,10)_"<option style='width:300px'>"_$ze_"  "_$ECODE_"</option>"
+     }   
+     k Value
+   q TextCaption
+]]></Implementation>
+</Method>
+
+<Method name="ParseDFM">
+<Description>
+d ##class(%ZDFM.page).Test()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>NameObj={##This_":Form"}</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	
+	if $l(NameObj,":")=1,$e(NameObj,1,2)'=".."{  s Name=".."_NameObj  }
+   if $e(NameObj,1,2)=".." {  s ClassName=##This,XdataName=$e(NameObj,3,$l(NameObj))
+   }else{                  s ClassName=$p(NameObj,":",1),XdataName=$p(NameObj,":",2)  }
+   s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""",21)"  
+   
+   
+   s NumLine=0
+   s CountObject=0
+   s %Lavel = 0
+   s %LavelObjectCalc=0    
+   s CountSubLine=0
+   s GlIndex=""
+   s GlIndex=$o(@GL@(GlIndex))
+   q:GlIndex="" ""
+   s GlIndex=$o(@GL@(GlIndex))
+   q:GlIndex="" "" 
+   s val=@GL@(GlIndex)
+   s tmp=$p(val,"object ",2)
+   s ObjectClass=$p(tmp,": ",2)
+   s ObjectName=$p(tmp,": ",1)
+   set elem=..DFMToObject(ObjectName,ObjectClass,GL,.GlIndex)
+   d ..ParseObject(elem)
+   q ""
+]]></Implementation>
+</Method>
+
+<Method name="DFMToObject">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ObjectName,ObjectClass,GL,GlIndex</FormalSpec>
+<Implementation><![CDATA[
+   s elem=##class(%ZDFM.XML.element).%New()
+   s elem.Proper.ObjectName=ObjectName
+   s elem.Proper.ObjectClass=ObjectClass
+   for { 
+       s GlIndex=$o(@GL@(GlIndex))
+       q:GlIndex=""  
+       q:GlIndex=@GL   
+       s val=@GL@(GlIndex)
+       s nam="end"
+       if $e($tr(val," ",""),1,$l(nam))=nam {
+	     q
+       }	     
+       s nam="object"
+       if $e($tr(val," ",""),1,$l(nam))=nam {
+          s tmp=$p(val,"object ",2)
+          s SubObjectClass=$p(tmp,": ",2)
+	      s SubObjectName=$p(tmp,": ",1)
+	      s SubElem=..DFMToObject(SubObjectName,SubObjectClass,GL,.GlIndex)   
+	      d elem.InnerHTML.Insert(SubElem)
+       }
+       s Name=$p(val," = ",1)
+       s Name=$TR(Name," ","")
+       s Value=$p(val," = ",2)
+      s Name=$p(val," = ",1)
+       s Name=$TR(Name," ","")
+       s Value=$p(val," = ",2)
+       if $e(Value,1,1)="'"  s Value=$e(Value,2,$l(Value))
+       if $e(Value,$l(Value),$l(Value))="'"  s Value=$e(Value,1,$l(Value)-1)
+       
+       s GlIndexTmp=GlIndex
+       s valTmp=val
+       set LavelProp=0 
+       for { q:$l(valTmp)=0  if $e(valTmp,1,1)=" " {  s valTmp=$e(valTmp,2,$l(valTmp))  s LavelProp=LavelProp+1 }else{ q }   } 
+       s CountLineInValue=0
+       for {  
+          s GlIndexTmp=$o(@GL@(GlIndexTmp))
+          q:GlIndexTmp=""  
+          s valSub=@GL@(GlIndexTmp)
+          s valTmp=valSub
+          set LavelNextProp=0 
+          for { q:$l(valTmp)=0  if $e(valTmp,1,1)=" " {  s valTmp=$e(valTmp,2,$l(valTmp))  s LavelNextProp=LavelNextProp+1 }else{ q }   } 
+          if LavelNextProp>LavelProp {
+	          s CountLineInValue=CountLineInValue+1
+	          if CountLineInValue=1 s Value=$e(Value,2,$l(Value))
+	          s LineOne=$e(valSub,LavelNextProp+1,$l(valSub))
+	          s AddEnter=1
+	          if $e(LineOne,1,1)="'"  s LineOne=$e(LineOne,2,$l(LineOne))
+	          if $e(LineOne,$l(LineOne)-2,$l(LineOne))="' +"  s LineOne=$e(LineOne,1,$l(LineOne)-3)  s AddEnter=0
+	          if $e(LineOne,$l(LineOne),$l(LineOne))="'"  s LineOne=$e(LineOne,1,$l(LineOne)-1)
+	          if $l(LineOne)=59  s AddEnter=0
+	          if CountLineInValue'=1,AddEnter=1   s Value=Value_$c(10)
+	          s Value=Value_LineOne
+	          s GlIndex=GlIndexTmp
+          }else{
+	         if $e(Value,$l(Value),$l(Value))=")" s Value=$e(Value,1,$l(Value)-1)
+	         if $e(Value,$l(Value),$l(Value))="'" s Value=$e(Value,1,$l(Value)-1)
+	         q
+	      }
+       }
+       // замена кодов "#1056" на Русские буквы
+       if $l(Value,"#")>1{
+           d ..EncodeCP1251(.Value)
+       }
+       s elem.Proper.%data(Name)=Value
+   }
+   q elem
+]]></Implementation>
+</Method>
+
+<Method name="DrawObject2">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>NameObjDrawObject={##This_":ShablonBeginTag"},Object="",Lavel=0</FormalSpec>
+<ProcedureBlock>0</ProcedureBlock>
+<Implementation><![CDATA[
+   // s NameObjDrawObject = ##This_":ShablonTXT"
+   if $l(NameObjDrawObject,":")=1,$e(NameObjDrawObject,1,2)'=".."{  s NameDrawObject=".."_NameObjDrawObject  }
+   if $e(NameObjDrawObject,1,2)=".." {  s ClassNameDrawObject=##This,XdataNameDrawObject=$e(NameObjDrawObject,3,$l(NameObjDrawObject))
+   }else{                  s ClassNameDrawObject=$p(NameObjDrawObject,":",1),XdataNameDrawObject=$p(NameObjDrawObject,":",2)  }
+   s GLDrawObject="^oddDEF("""_ClassNameDrawObject_""",""x"","""_XdataNameDrawObject_""",21)"  
+   s GlIndexDrawObject=""
+   s ShablobDrawObject="",CountLineDrawObject=0
+   for { 
+       s GlIndexDrawObject=$o(@GLDrawObject@(GlIndexDrawObject))
+       q:GlIndexDrawObject=""  
+       continue:GlIndexDrawObject=1  
+       q:GlIndexDrawObject=@GLDrawObject   
+       s CountLineDrawObject=CountLineDrawObject+1
+       s:CountLineDrawObject'=1 ShablobDrawObject=ShablobDrawObject_$c(10)
+	   for IndBSDrawObject=1:1:Lavel {
+		   s ShablobDrawObject=ShablobDrawObject_"  "
+	   }  
+       s ShablobDrawObject=ShablobDrawObject_@GLDrawObject@(GlIndexDrawObject)
+   }
+   s nameDrawObject=""
+   for {
+	   s nameDrawObject=$o(Object.%data(nameDrawObject))
+	   q:nameDrawObject=""
+	   s valueDrawObject=Object.%data(nameDrawObject)
+	   s valueDrawObject=##class(%ZDFM.page).ExecFragCode(valueDrawObject,"#(",")#")
+	   if $IsObject(valueDrawObject){
+		   s IndvalueDrawObject=""
+		   for {
+			  s IndvalueDrawObject=$o(valueDrawObject.%data(IndvalueDrawObject))
+			  q:IndvalueDrawObject=""
+	          x " if '$d("_nameDrawObject_") { s "_nameDrawObject_"=##class(%ZEN.proxyObject).%New() }"  
+		      TRY { XECUTE ("(in) SET "_nameDrawObject_"."_IndvalueDrawObject_"=in     ", valueDrawObject.%data(IndvalueDrawObject)) } CATCH{ }	   
+		      s ShablobDrawObject=$replace(ShablobDrawObject,"["_nameDrawObject_"."_IndvalueDrawObject_"]",valueDrawObject.%data(IndvalueDrawObject))
+		   }
+	   }else{
+          s ShablobDrawObject=$replace(ShablobDrawObject,"["_nameDrawObject_"]",valueDrawObject)
+          TRY { XECUTE ("(in) SET "_nameDrawObject_"=in   ", valueDrawObject) } CATCH{ }
+	   }
+   }
+   s ShablobDrawObject=##class(%ZDFM.page).WriteFragCode(ShablobDrawObject,"#(",")#")
+   // Удаление все лишнии тэги, которые описанны в шаблоне, но нет в загружаемой форме
+   s ShablobDrawObject=##class(%ZDFM.page).ClearFragCode(ShablobDrawObject,"[","]")
+   w !,ShablobDrawObject,!
+]]></Implementation>
+</Method>
+
+<Method name="ParseObject">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>elem</FormalSpec>
+<Implementation><![CDATA[
+   s ObjectClass=elem.Proper.ObjectClass
+   s ObjectName=elem.Proper.ObjectName
+   s OneProper=##class(%ZEN.proxyObject).%New()
+   s PropName=""
+   for {
+     s PropName=$o(elem.Proper.%data(PropName))
+     q:PropName=""
+     s PropVal=elem.Proper.%data(PropName)
+     if $l(PropName,".")>1{   
+        s Subn1=$p(PropName,".",1)
+        s Subn2=$p(PropName,".",2)
+        if '$d(OneProper.%data(Subn1)){ s OneProper.%data(Subn1)=##class(%ZEN.proxyObject).%New() }
+        s OneProper.%data(Subn1).%data(Subn2)=PropVal
+     }else{
+        s OneProper.%data(PropName)=PropVal
+     }
+   } 
+   s ClassNameParseObject="%ZDFM.Component."_ObjectClass
+   q:'$zObjClassMethod("%CompiledClass","%ExistsId",ClassNameParseObject)=1 
+   
+   
+   // Выводим шаблон 
+   If $System.CLS.IsMthd(ClassNameParseObject,"PreDraw") {
+       d $zObjClassMethod(ClassNameParseObject,"PreDraw",OneProper)
+   }
+   // отрисовываем объект из шаблона
+   d ..DrawObject2(ClassNameParseObject_":ShablonBeginTag", OneProper)
+             
+   s InnerIndex=""
+   for {
+     s InnerIndex=$o(elem.InnerHTML.Oref(InnerIndex))
+     q:InnerIndex=""
+     s SubElem=elem.InnerHTML.Oref(InnerIndex)
+     d ..ParseObject(SubElem)
+   }
+   
+   // отрисовываем Закрытие тэга из шаблона
+   d ..DrawObject2(ClassNameParseObject_":ShablonEndTag", OneProper)
+
+   
+   s GLDrawObject="^oddDEF("""_ClassNameParseObject_""",""p"",""isNotEvent"",21)"  
+
+   s isNotEvent=0
+   if $d(@GLDrawObject),@GLDrawObject=1  s isNotEvent=1
+   // Добавляем события JS  
+   if isNotEvent'=1 {
+       w " <script> var "_ObjectName_"=document.getElementById('"_ObjectName_"');</script>"
+       s NameObj=""
+       for {
+         s NameObj=$o(OneProper.%data(NameObj))
+         q:NameObj=""
+         continue:$e(NameObj,1,2)'="On"
+         s ShorName=$e(NameObj,3,$l(NameObj))
+         s ShorName=$zcvt(ShorName,"l" )
+         w "<script>"
+         w " try {"
+         w "   if ("_ObjectName_".addEventListener) { "_ObjectName_".addEventListener('"_ShorName_"', "_OneProper.%data(NameObj)_"); } "
+         w "   else if ("_ObjectName_".attachEvent)  { "_ObjectName_".attachEvent('"_$zcvt(NameObj,"L")_"',"_OneProper.%data(NameObj)_");  }"
+         w " }catch (e) {  } "
+         w "</script>"
+      }
+   }
+   // запускаем метод после отрисовки (если он есть)
+   if $System.CLS.IsMthd(ClassNameParseObject_":ShablonTXT") {
+	  d $zObjClassMethod(ClassNameParseObject,"PostDraw",OneProper)
+   }
+]]></Implementation>
+</Method>
+
+<Method name="AutoAddSupperClass">
+<Description>
+ ##class(%ZDFM.page).AutoAddSupperClass</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>NameSpace=$zu(5),ClassName=""</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+	s res=0
+	s oldNs=$zu(5)
+	d $zu(5,NameSpace)
+    if $zObjClassMethod("%CompiledClass","%ExistsId",ClassName)=1 { 
+      if $classmethod(ClassName, "%Extends", "%ZDFM.page")=0{
+           s tt=##class(%Dictionary.ClassDefinition).%OpenId(ClassName)
+           if $l(tt.Super)=0 {s tt.Super="%ZDFM.page"
+           }else{             s tt.Super=tt.Super_",%ZDFM.page"}
+           d tt.%Save()
+           s tt=""
+           Do $system.OBJ.Compile(ClassName,"cuk /checkuptodate=expandedonly")
+           s res=1
+      }
+    }
+    d $zu(5,oldNs)
+    q res
+]]></Implementation>
+</Method>
+
+<Method name="IsExistEtalonClass">
+<Description>
+ if ##class(%ZDFM.page).IsExistEtalonClass(ClassName, "%ZDFM.page")=1</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>ClassName="",isEtalonClassName="",filtr=""</FormalSpec>
+<ReturnType>%Boolean</ReturnType>
+<Implementation><![CDATA[
+   q:'$d(^oddDEF(ClassName)) 0
+   q:'$d(^oddDEF(ClassName,60)) 0
+   s res=0
+   for IndexEtalon=1:1:$l(isEtalonClassName,","){
+	   s ClassNameEtalon=$p(isEtalonClassName,",",IndexEtalon)
+       if $l(^oddDEF(ClassName,60),ClassNameEtalon)>1          s res=1  q
+       q:res=1
+   }
+   q:res=1 1
+   
+   
+   s ClassCSP=^oddDEF(ClassName,60)
+   s res=0
+   for ind=1:1:$l(ClassCSP,","){
+      d $system.OBJ.GetDependencies($p(ClassCSP,",",ind),.included)
+      s ClassParentTmp=""
+      for {
+        s ClassParentTmp=$o(included(ClassParentTmp))
+        q:ClassParentTmp=""
+        continue:$d(filtr(ClassParentTmp))
+        s SubClass=ClassParentTmp
+	    if $l(SubClass,".")=1,$l(SubClass,"%")=2 s SubClass="%Library."_SubClass
+	    if $l(SubClass,".")=1                    s SubClass="User."_SubClass
+	    if $d(^oddDEF(SubClass)) {
+	 	  if $d(^oddDEF(SubClass,60)) { 
+	 	       for IndexEtalon=1:1:$l(isEtalonClassName,","){
+                  if $l(^oddDEF(SubClass,60),$p(isEtalonClassName,",",IndexEtalon))>1   s res=1  q
+                  q:res=1
+	 	       }
+	      }   
+	    }
+	    q:res=1
+     }
+     q:res=1
+   }
+   q res
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="%ZDFM.SourceControll">
+<Description>
+d ##class(%ZDFM.SourceControll).InstallSorceControllAllNameSpace()</Description>
+<ProcedureBlock>1</ProcedureBlock>
+<Super>%Studio.SourceControl.Base</Super>
+<TimeChanged>64974,48598.365615</TimeChanged>
+<TimeCreated>64965,32556.304474</TimeCreated>
+
+<Parameter name="RExportPath">
+<Default>c:/!5autoexport/</Default>
+</Parameter>
+
+<XData name="Menu">
+<Data><![CDATA[
+<MenuBase>; 
+   <Menu Name="%SourceMenu" Type="0">
+    <MenuItem Name="%CheckIn" />
+   </Menu>
+ 
+   <Menu Name="Tools" Type="0">
+     <!-- Меню для инсталяции --> 
+     <MenuItem Name="SourceControlAllNS"/>
+     <!--MenuItem Name="LoadClassCacheWebBuilder"/-->
+     <!--MenuItem Name="SetupSMWrapClass"/-->
+   </Menu> 
+   
+   <Menu Name="WebBuilder" Type="1">
+     <MenuItem Name="cmWebDesigner"/>
+   </Menu>
+</MenuBase>
+]]></Data>
+</XData>
+
+<Method name="InstallSorceControllAllNameSpace">
+<Description>
+Установка Контроля версия на все области имен</Description>
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+
+     For i=1:1:$ZU(90,0) Set nslist($ZU(90,2,0,i))=""
+     Set nameSpace=""
+     For {
+        Set nameSpace=$O(nslist(nameSpace))
+        Quit:nameSpace=""
+        CONTINUE:nameSpace="%CACHELIB"
+        w !,nameSpace_":"
+        w ##class(%Studio.SourceControl.Interface).SourceControlClassSet(##this,nameSpace)
+     }
+	 w !,"OK"
+]]></Implementation>
+</Method>
+
+<Method name="OnMenuItem">
+<FormalSpec><![CDATA[MenuName:%String,InternalName:%String,SelectedText:%String,&Enabled:%Boolean,&DisplayName:%String]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+    ; <!-- Эксперемент   -->
+    s LocalPathPlayer=^%SYS("bindir")_"mplayer.exe"
+    
+    if MenuName="Tools,SourceControlAllNS"{
+		Set DisplayName="Установить контроль версий на все NAMESPACE"
+		Set Enabled=1
+		quit $$$OK
+    }
+    	
+	
+	 if MenuName = "WebBuilder" {
+		set DisplayName = "Cache Web Builder"
+		Set Enabled=1
+		quit $$$OK
+	}
+	 
+	 
+	 
+    if MenuName="WebBuilder,cmWebDesigner"{ 
+       s DisplayName = "Designer"
+	   set Enabled =1
+       quit $$$OK
+    }
+  
+    if MenuName="Tools,LoadClassCacheWebBuilder"{ 
+		Set DisplayName="Load SMWrapClass from GitHub"
+		Set Enabled=1
+	    Quit $$$OK
+	}
+	if MenuName="Tools,SetupSMWrapClass"{ 
+		Set DisplayName="Setup SMWrap server"
+		Set Enabled=1
+	    Quit $$$OK
+	}
+	
+    Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="UserAction">
+<FormalSpec><![CDATA[Type:%Integer,Name:%String,InternalName:%String,SelectedText:%String,&Action:%String,&Target:%String,&Msg:%String,&Reload:%Boolean]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+  set Port=57772
+  Set Action=0,Target="",Msg="",Reload=0
+  
+  
+  if (Type=0)&&(Name="WebBuilder,cmWebDesigner")
+  {
+            set Port=57772
+            if $d(^%SYS("WebServer","Port")){
+                s Port=^%SYS("WebServer","Port")
+            }
+            s ClassName=$e(InternalName,1,$l(InternalName)-4)
+            s URL="http://"_$zu(110)_":"_Port_$System.CSP.GetDefaultApp($zu(5))_"/"_$zcvt(ClassName,"O","URL")_".cls"
+            s UserNameEncode=$System.Encryption.Base64Encode(..LoginUserName)
+            s UserPassEncode=$System.Encryption.Base64Encode(..LoginUserPass)
+		    s pathPlayer=^%SYS("bindir")_"CacheWebBuilder.exe "
+	        ; s pathPlayer="C:\DelphiProject\SimpleDesigner\CacheWebBuilder.exe"
+            s Param=""
+            d ##class(%ZDFM.page).AutoAddSupperClass($zu(5),ClassName)
+	        s Action = 3
+	        s Target =pathPlayer_"  "_URL_"  "_UserNameEncode_"  "_UserPassEncode
+	        w !,Target,!
+	      Quit $$$OK
+	}
+	
+	 
+	
+	if Name="Tools,SourceControlAllNS"
+	{
+       set Action = 0
+	   d ##class(%ZSource.SMWrap.control).InstallSorceControllAllNameSpace()	   
+	   Quit $$$OK
+	}
+	if Name="Tools,LoadClassCacheWebBuilder"
+	{
+       d ##class(%ZSource.SMWrap.control).DownLoadSMWrapFromPublicGIT()
+	   set Action = 0
+	   Quit $$$OK
+	}
+	
+	
+	if Name="Tools,SetupSMWrapClass"{ 
+            s ClassController="%ZSource.SMWrap.Config"
+            s URL=$System.CSP.GetDefaultApp($zu(5))_"/"_$zcvt(ClassController,"O","URL")_".cls?test=1"_"&InternalName="_$zcvt(InternalName,"O","URL")_"&Name="_$zcvt(Name,"O","URL")_"&author="_$zcvt($System.Encryption.Base64Encode(..LoginUserName_":"_..LoginUserPass),"O","URL")
+            Set Action=2
+		    Set Target=URL
+	        Quit $$$OK
+		    /*	        
+	        set Port=57772
+            if $d(^%SYS("WebServer","Port")){
+                s Port=^%SYS("WebServer","Port")
+            }
+            s ClassController="%ZSource.SMWrap.Config"
+            s URL="http://"_$zu(110)_":"_Port_$System.CSP.GetDefaultApp($zu(5))_"/"_$zcvt(ClassController,"O","URL")_".cls?test=1"_"&InternalName="_$zcvt(InternalName,"O","URL")_"&Name="_$zcvt(Name,"O","URL")_"&author="_$zcvt($System.Encryption.Base64Encode(..LoginUserName_":"_..LoginUserPass),"O","URL")
+            ; s Target="start chrome.exe --app=http://www.google.ru"
+            ; s Target="chrome.exe   -incognito   --new-window  --kiosk  "_URL
+            s Target="chrome.exe   -incognito   --new-window  --app="_URL
+	        s Action = 3
+            Quit $$$OK
+            */
+	}
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Property name="LoginUserName">
+<Type>%String</Type>
+</Property>
+
+<Property name="LoginUserPass">
+<Type>%String</Type>
+</Property>
+
+<Method name="Login">
+<FormalSpec>login:%String="",password:%String=""</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	s ..LoginUserName=login
+	s ..LoginUserPass =password
+	quit $$$OK
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="%ZDFM.XML.element">
+<Super>%RegisteredObject,%XML.Adaptor</Super>
+<TimeChanged>64970,55374.860237</TimeChanged>
+<TimeCreated>64970,53886.207035</TimeCreated>
+
+<Property name="Proper">
+<Type>%ZEN.proxyObject</Type>
+<InitialExpression>##class(%ZEN.proxyObject).%New()</InitialExpression>
+</Property>
+
+<Property name="InnerHTML">
+<Type>%ListOfObjects</Type>
+<InitialExpression>##class(%ListOfObjects).%New()</InitialExpression>
+</Property>
+</Class>
+</Export>

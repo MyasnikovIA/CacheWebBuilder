@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-22 13:17:47">
+<Class name="%ZDFM.demo.demo1">
+<Super>%ZDFM.page</Super>
+<TimeChanged>64964,58611.735241</TimeChanged>
+<TimeCreated>64964,48759.504005</TimeCreated>
+
+<XData name="Form">
+<Data><![CDATA[
+<dfm><![CDATA[	
+object RootForm: TForm3
+  Left = 0
+  Top = 0
+  ClientHeight = 168
+  ClientWidth = 301
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Arial'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 14
+  object Button1: TButton
+    Left = 25
+    Top = 16
+    Width = 103
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
+  object Edit1: TEdit
+    Left = 136
+    Top = 17
+    Width = 105
+    Height = 22
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Button2: TButton
+    Left = 25
+    Top = 48
+    Width = 103
+    Height = 25
+    Caption = 'Button2'
+    TabOrder = 2
+    OnClick = Button2Click
+  end
+end
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<Method name="Button1Click">
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+   alert(1111)
+   Edit1.value="2222222222222";
+]]></Implementation>
+</Method>
+
+<Method name="Button2Click">
+<ClassMethod>1</ClassMethod>
+<Language>cache</Language>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[   &js<  Edit1.value="#($ZDT($h))#" >
+]]></Implementation>
+</Method>
+
+<Method name="OnCreate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  w "<script>"	
+  &js<  alert(111) >
+  w "</script>"
+]]></Implementation>
+</Method>
+
+<Method name="Button3Click">
+<ClassMethod>1</ClassMethod>
+<Language>cache</Language>
+<ReturnType>%String</ReturnType>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[
+   &js<  Edit1.value="#($ZDT($h))#" >
+   q "111"
+]]></Implementation>
+</Method>
+</Class>
+
+
+<Class name="%ZDFM.demo.demo2">
+<Description>
+</Description>
+<Super>%ZDFM.page</Super>
+<TimeChanged>64967,26314</TimeChanged>
+<TimeCreated>64964,56897.606863</TimeCreated>
+
+<Method name="Button1Click">
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+   alert(1111)
+   Edit1.value="2222222222222";
+]]></Implementation>
+</Method>
+
+<Method name="Button2Click">
+<ClassMethod>1</ClassMethod>
+<Language>cache</Language>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[   &js<  Edit1.value="#($ZDT($h))#" >
+]]></Implementation>
+</Method>
+
+<Method name="OnCreate">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+  w "<script>"	
+  &js<  alert(111) >
+  w "</script>"
+]]></Implementation>
+</Method>
+
+<Method name="Button3Click">
+<ClassMethod>1</ClassMethod>
+<Language>cache</Language>
+<ReturnType>%String</ReturnType>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[
+   &js<  Edit1.value="#($ZDT($h))#" >
+   q "111"
+]]></Implementation>
+</Method>
+
+<XData name="Form">
+<Data><![CDATA[
+<dfm><![CDATA[
+object RootForm: TForm3
+  Left = 0
+  Top = 0
+  ClientHeight = 168
+  ClientWidth = 301
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Arial'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 14
+  object Label1: TLabel
+    Left = 32
+    Top = 88
+    Width = 32
+    Height = 14
+    Caption = 'Label1'
+  end
+  object Button1: TButton
+    Left = 9
+    Top = 29
+    Width = 103
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 0
+  end
+  object Edit1: TEdit
+    Left = 184
+    Top = 145
+    Width = 105
+    Height = 22
+    TabOrder = 1
+    Text = 'Edit1'
+  end
+  object Button2: TButton
+    Left = 1
+    Top = 133
+    Width = 75
+    Height = 25
+    Caption = 'Button2'
+    TabOrder = 2
+  end
+end
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.demo.demo3">
+<Description>
+</Description>
+<Super>%ZDFM.page</Super>
+<TimeChanged>64974,42405.064701</TimeChanged>
+<TimeCreated>64965,33600.598556</TimeCreated>
+
+<Method name="HTMLTimer1Timer">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>args=""</FormalSpec>
+<Language>cache</Language>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[
+  &js< HTMLEditText1.value='#($zdt($h))#' >	
+  q
+]]></Implementation>
+</Method>
+
+<XData name="Form">
+<Data><![CDATA[
+<dfm><![CDATA[
+object DesignForm: TRootForm
+  Left = 0
+  Top = 0
+  Caption = ''
+  ClientHeight = 180
+  ClientWidth = 309
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Arial'
+  Font.Style = []
+  OldCreateOrder = False
+  PixelsPerInch = 96
+  TextHeight = 14
+end
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+</Export>

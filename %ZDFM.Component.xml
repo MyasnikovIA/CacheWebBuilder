@@ -1,0 +1,1566 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-22 13:17:37">
+<Class name="%ZDFM.Component.BootStrapCss">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,59564.514818</TimeChanged>
+<TimeCreated>64971,58938.766538</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[  /// <script src='#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("HTML.Bootstrap.v400.js","O","URL"))#.cls'></script>
+]]></Implementation>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+    <link id="[ObjectName]" href='#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("HTML.Bootstrap.v400.css","O","URL"))#.cls'  rel='stylesheet' >   
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.BootStrapJs">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,59556.89938</TimeChanged>
+<TimeCreated>64971,59327.283698</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+    <script id="[ObjectName]" src='#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("HTML.Bootstrap.v400.js","O","URL"))#.cls'></script>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLAudio">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,77040.764259</TimeChanged>
+<TimeCreated>64969,77626.144822</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <audio  id="[ObjectName]" name="[ObjectName]" #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))# #($case($l($g(Poster,"")),0:"",:" Poster='[Poster]'"))# #($case($l($g(Loop,"")),0:"",:" Loop='[Loop]'"))# #($case($l($g(Autoplay,"")),0:"",:" Autoplay='[Autoplay]'"))# #($case($l($g(Controls,"")),0:"",:" Controls='[Controls]'"))# style="position:absolute;overflow:hidden;  border: 1px solid blue;  left:[Left];  top:[Top];  width:[Width];  height:[Height];#(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]" [Attribute.Strings]>[InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</audio>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLButton">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,74140.39427</TimeChanged>
+<TimeCreated>64968,75649.396347</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <button  id="[ObjectName]" name="[ObjectName]" #($case( $l($g(TypeButton,"")),0:"",:"Type='"_TypeButton_"'"))# #($case($g(Enabled,""),"False":"disabled='disabled'",:""))##($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                /*border: 1px solid blue; */
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#; #(..IsVisible(Visible))##(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]" [Attribute.Strings]>[Text]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</Button>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLCalendar">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64974,40675.075436</TimeChanged>
+<TimeCreated>64974,39194.422712</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <input  id="[ObjectName]" name="[ObjectName]" 
+        value='#($REPLACE($g(Text,""),"'","\'"))#'   Type='date'  #($case($g(Enabled,""),"False":"disabled='disabled'",:""))#   #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#; #(..IsVisible(Visible))##(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#  [Style.Strings]" #($case($l($g(MinData,"")),0:"",:" min='[MinData]' "))#  #($case($l($g(MaxData,"")),0:"",:" max='[MaxData]' "))#
+           [Attribute.Strings]/>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLCheckBox">
+<Description>
+OK</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,31086.402675</TimeChanged>
+<TimeCreated>64967,75067.907109</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<div for="[ObjectName]" 
+     #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+     style="position:absolute;
+            border: 1px solid blue; 
+            left:[Left];  
+            top:[Top];  
+            /*margin-top: auto;margin-bottom: auto;margin: 0 auto;*/
+            width:#(Width-2)#;  
+            height:[Height]; 
+            color: #(..DecodeColor($g(FontColor,"")))# ;
+            background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+            font-family: '#($g(FontName,"Arial"))#';
+            font-size:#($g(FontSize,"12"))#;#(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]"
+     >
+    <input type="checkbox" id="[ObjectName]" name="[ObjectName]"   #($case(Checked,"True":"checked='checked'",:""))#  style=" width:#(Height-3)#;  height:#(Height-3)# ;vertical-align: -#(Height/4)#;"  [Attribute.Strings] >[Text][InnerHTML.Strings]
+</div>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLComboBox">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,55450.697266</TimeChanged>
+<TimeCreated>64969,46555.789501</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[
+	// #(..CalcOption($g(OptionList.Strings,""),$g(OptionList,""),$g(Text,"")))#
+	// #($g(Option.Strings,""))#
+]]></Implementation>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <select  id="[ObjectName]" name="[ObjectName]"    #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                /*border: 1px solid blue; */
+                padding: 3px;
+                left:[Left];  
+                top:[Top];  
+                width:[Width]px;  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>#(..CalcOption($case($l($g(Option,"")),0:"",:Option.Strings),"[OptionList]","[Text]"))#
+ </select> 
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLComponent">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,76870.790791</TimeChanged>
+<TimeCreated>64970,76798.0733</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<[TagName] id="[ObjectName]" name="[ObjectName]" style="position:absolute; overflow:hidden; border: 1px solid blue; left:[Left]; top:[Top]; width:[Width]; height:[Height]; [Style.Strings]" [Attribute.Strings]>[InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</[TagName]>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLCss">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,77867.365403</TimeChanged>
+<TimeCreated>64969,70595.740274</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <style  id="[ObjectName]">[InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ </style>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLDataList">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,78093.479218</TimeChanged>
+<TimeCreated>64969,71036.752427</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <datalist  id="[ObjectName]" name="[ObjectName]">#(..CalcOption(Option.Strings,$g(Option,""),""))#
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </datalist>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLDiv">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,86278.838114</TimeChanged>
+<TimeCreated>64970,69281.086915</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<div
+       id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                 border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </div>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLEditText">
+<Description>
+----OK----</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,53019.711001</TimeChanged>
+<TimeCreated>64968,67425.493907</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <input  id="[ObjectName]" name="[ObjectName]" 
+        value='#($REPLACE($g(Text,""),"'","\'"))#'   #($case( $l($g(TypeInput,"")),0:"",:"Type='"_TypeInput_"'"))# #($case($g(Enabled,""),"False":"disabled='disabled'",:""))#  #($case( $l($g(List,"")),0:"",:"list='"_List_"'"))# #($case( $l($g(Pattern,"")),0:"",:"Pattern='"_Pattern_"'"))#  #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                /*border: 1px solid blue; */
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#; 
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]/>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLFlash">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,84688.73083</TimeChanged>
+<TimeCreated>64969,78322.014836</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[
+   // переработать
+	; <embed src="images/mouse.swf" width="400" height="300" 
+    ;       type="application/x-shockwave-flash"
+    ;       pluginspage="http://www.macromedia.com/go/getflashplayer">  
+  /*
+<object id="[ObjectName]" name="[ObjectName]"  width="[Width]" height="[Height]" 
+style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left]; top:[Top]; #(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]" [Attribute.Strings]>
+     <param name="movie" value="[Text]">
+     <embed src="[Text]" width="[Width]" height="[Height]"></embed>[InnerHTML.Strings]
+  </object>  
+	*/
+]]></Implementation>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <embed  id="[ObjectName]" name="[ObjectName]"   src="[Text]" width="[Width]" height="[Height]" 
+     style="position:absolute;  overflow:hidden;  left:[Left]; top:[Top]; #(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]"
+     type="application/x-shockwave-flash"
+     pluginspage="http://www.macromedia.com/go/getflashplayer"
+    [Attribute.Strings]  >
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</embed>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLForm">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,76017.39822</TimeChanged>
+<TimeCreated>64969,62127.784591</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<forma  id="[ObjectName]" name="[ObjectName]"   #($case($l($g(LabelFor,"")),0:"",:" for='[LabelFor]'"))# #($case($g(Enabled,""),"False":"disabled='disabled'",:""))#     #($case($l($g(ActionURL,"")),0:"",:" Action='"_ActionURL_"'"))#  #($case($l($g(Method,"")),0:"",:" Method='"_Method_"'"))# 
+        style="position:absolute;
+                overflow:hidden; 
+                border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</forma>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLH">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,76312.088397</TimeChanged>
+<TimeCreated>64969,67005.366219</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<[H]  id="[ObjectName]" name="[ObjectName]" style="position:absolute; font-weight: bold; left:[Left]; top:[Top]; width:[Width]; height:[Height]; color: #(..DecodeColor($g(FontColor,"")))# ; background-color:#(..DecodeColor($g(BackGroundColor,"")))#; font-family: '#($g(FontName,"Arial"))#';  #(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]" [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</[H]>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLIframe">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,76197.287605</TimeChanged>
+<TimeCreated>64969,67285.390312</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<iframe  id="[ObjectName]" name="[ObjectName]"
+       #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))#
+       style="position:absolute;
+                overflow:hidden; 
+                border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                #(..IsVisible(Visible))#
+                "   [Attribute.Strings]>
+</iframe>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLImage">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,56994.810335</TimeChanged>
+<TimeCreated>64971,56741.63588</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<img id="[ObjectName]" name="[ObjectName]" src="[Src]" alt="[Text]"   width="[Width]" height="[Height]"
+            style="position:absolute; overflow:hidden; 
+                 /* border: 1px solid blue; */
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]/>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLJavaScript">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,80694.303139</TimeChanged>
+<TimeCreated>64969,70321.637896</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <script  id="[ObjectName]" language="JavaScript" #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))# #($case($l($g(TypeScript,"")),0:"",:" TypeScript='[TypeScript]'"))# [Attribute.Strings]>#(InnerHTML.Strings)#
+  -----[InnerHTML.Strings]
+  [Top]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</script>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLJQueryLib">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,37563.700586</TimeChanged>
+<TimeCreated>64972,32394.045921</TimeCreated>
+
+<Parameter name="isNotEvent">
+<Default>1</Default>
+</Parameter>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<script language="JavaScript" type="text/javascript" src="#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("%ZDFM.Lib.JQuery.v320.min.js","O","URL"))#.cls"   id="[ObjectName]"></script> 
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLLabel">
+<Description>
+OK</Description>
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,73520.186038</TimeChanged>
+<TimeCreated>64968,28298.939709</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <span  id="[ObjectName]" name="[ObjectName]"     #($case($l($g(LabelFor,"")),0:"",:" for='[LabelFor]'"))#  #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]</span>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLLink">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,77740.618447</TimeChanged>
+<TimeCreated>64969,70732.127066</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <link  id="[ObjectName]" #($case($l($g(href,"")),0:"",:" href='[href]'"))# #($case($l($g(riole,"")),0:"",:" riole='[riole]'"))# ></link>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLListBox">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,55813.119777</TimeChanged>
+<TimeCreated>64969,59201.208738</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <select  id="[ObjectName]" name="[ObjectName]"  multiple=1   #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                /*border: 1px solid blue; */
+                padding: 3px;
+                left:[Left];  
+                top:[Top];  
+                width:[Width]px;  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>#(..CalcOption($case($l($g(OptionItem,"")),0:"",:OptionItem.Strings),"[OptionList]","[Text]"))#
+ </select> 
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLMemo">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,198.360944</TimeChanged>
+<TimeCreated>64971,85873.165044</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <textarea
+       id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                #($case($g(Resize,"all"),"all":"",:"resize: [Resize];"))# 
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]</textarea>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLProgressBar">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,85234.245742</TimeChanged>
+<TimeCreated>64971,82719.481685</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <progress 
+       id="[ObjectName]" name="[ObjectName]"    value="#($g(Position,"0"))#" max="#($g(Max,"100"))#"
+        style="position:absolute;
+                overflow:hidden; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+            [Style.Strings]"
+            [Attribute.Strings]>[Text]</progress>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLRootCanvas">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64974,43044.994196</TimeChanged>
+<TimeCreated>64970,78942.610107</TimeCreated>
+
+<Parameter name="isNotEvent">
+<Default>1</Default>
+</Parameter>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLRootCanvasPanel">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64974,43058.916358</TimeChanged>
+<TimeCreated>64970,78977.583487</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLSource">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,77382.353738</TimeChanged>
+<TimeCreated>64969,73130.037939</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+   <source  id="[ObjectName]" name="[ObjectName]"  #($case($l($g(Src,"")),0:"",:" src='[Src]'"))# #($case($l($g(TypeSrc,"")),0:"",:" type='[TypeSrc]'"))#  />
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLStringGrid">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,31281.69361</TimeChanged>
+<TimeCreated>64972,31266.83173</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<div
+       id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </div>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTable">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,27845.330615</TimeChanged>
+<TimeCreated>64972,27845.330615</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<table
+       id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                 border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </table>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTd">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,27764.175282</TimeChanged>
+<TimeCreated>64972,27764.175282</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<td   id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                 border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </td>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTh">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,29636.475823</TimeChanged>
+<TimeCreated>64972,29636.475823</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<td   id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                 border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[Text][InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </td>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTimer">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,81777.462202</TimeChanged>
+<TimeCreated>64971,60658.966879</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[
+	/*var [ObjectName]Object = setTimeout(function [ObjectName]Object() {
+         [FunTimer.Strings]
+         [ObjectName]Object = setTimeout([ObjectName]Object, [Internal]);
+   }, [Internal]);*/
+]]></Implementation>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+
+<script  id="[ObjectName]" language="JavaScript">
+    
+    var tick[ObjectName]=function(){
+	    [InnerHTML.Strings]
+	    #($case($l($g(OnTimer,"")),0:"",:"  [OnTimer]();"))#
+        timerId[ObjectName] = setTimeout(tick[ObjectName], [Interval]);
+    }
+    var timerId[ObjectName] = setTimeout(tick[ObjectName], [Interval]);
+</script>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTr">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64972,30116.893392</TimeChanged>
+<TimeCreated>64972,27696.388495</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<tr
+       id="[ObjectName]" name="[ObjectName]"   
+        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+        style="position:absolute;
+                overflow:hidden; 
+                padding-top:1.5%;
+                 border: 1px solid blue; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                vertical-align: -3;
+                color: #(..DecodeColor($g(FontColor,"")))# ;
+                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
+                font-family: '#($g(FontName,"Arial"))#';
+                font-size:#($g(FontSize,"12"))#;
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                [Style.Strings]"
+           [Attribute.Strings]>[InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  </tr>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLTrackBar">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64971,85226.898394</TimeChanged>
+<TimeCreated>64971,85058.92729</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[ // <input type="range" min="0" max="300" value="10" />
+]]></Implementation>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+  <input type="range"  min="0"
+       id="[ObjectName]" name="[ObjectName]"    value="#($g(Position,"0"))#" max="#($g(Max,"100"))#"
+        style="position:absolute;
+                overflow:hidden; 
+                left:[Left];  
+                top:[Top];  
+                width:[Width];  
+                height:[Height]; 
+                #(..IsVisible(Visible))#
+                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
+                #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
+            [Style.Strings]"
+            [Attribute.Strings]/>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.HTMLVideo">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,77069.533431</TimeChanged>
+<TimeCreated>64969,73343.260734</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+ <video  id="[ObjectName]" name="[ObjectName]"  #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))# #($case($l($g(Poster,"")),0:"",:" Poster='[Poster]'"))# #($case($l($g(Loop,"")),0:"",:" Loop='[Loop]'"))# #($case($l($g(Autoplay,"")),0:"",:" Autoplay='[Autoplay]'"))# #($case($l($g(Controls,"")),0:"",:" Controls='[Controls]'"))#  style="position:absolute; overflow:hidden;  border: 1px solid blue; left:[Left];  top:[Top];  width:[Width];  height:[Height];#(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]" [Attribute.Strings]>[InnerHTML.Strings]
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</video>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.TModalForm">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64970,72160.578853</TimeChanged>
+<TimeCreated>64968,42209.439754</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+
+
+<Class name="%ZDFM.Component.TRootForm">
+<Super>%RegisteredObject</Super>
+<TimeChanged>64974,43081.656178</TimeChanged>
+<TimeCreated>64971,52245.791657</TimeCreated>
+
+<Method name="PreDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<Method name="PostDraw">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+</Method>
+
+<XData name="ShablonBeginTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+<body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+
+<XData name="ShablonEndTag">
+<Data><![CDATA[
+<dfm><![CDATA[
+</body>
+]]]]><![CDATA[></dfm>
+]]></Data>
+</XData>
+</Class>
+</Export>
