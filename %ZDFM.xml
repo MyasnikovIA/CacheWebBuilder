@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-22 13:41:39">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2013.1.4 (Build 801)" ts="2018-11-23 19:39:41">
 <Class name="%ZDFM.page">
 <Super>%CSP.Page</Super>
-<TimeChanged>64974,42659.873721</TimeChanged>
+<TimeChanged>64975,69458.529264</TimeChanged>
 <TimeCreated>64964,45915.102647</TimeCreated>
 
 <Parameter name="CodePage">
@@ -68,9 +68,12 @@ panel / resize panel / form  </Description>
 	if $isobject(%request.Content){
 		for { q:%request.Content.AtEnd  s json=json_%request.Content.Read(32000)	      }	
 	}	
-	
 	s ParentClass=""
-    s:$d(%request.CgiEnvs("HTTP_REFERER")) ParentClass= $SYSTEM.CSP.GetClassName(%request.CgiEnvs("HTTP_REFERER"))
+    if $d(%request.CgiEnvs("HTTP_REFERER")) {
+	    s ParentClass=%request.CgiEnvs("HTTP_REFERER")
+	    s ParentClass=$replace(ParentClass,"/?","?")
+	    s ParentClass= $SYSTEM.CSP.GetClassName(ParentClass)   
+    }
     s:ParentClass="" ParentClass=%request.Get("ParentClass","")
 	s:ParentClass="" ParentClass=##THIS
 	do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(json,,.%override,1)
@@ -133,8 +136,7 @@ panel / resize panel / form  </Description>
               >
    	         }
 		 }
-		 k ^%deb
-         ; Поиск Xdata с формой DFM 
+		 ; Поиск Xdata с формой DFM 
          s ClassName=##This,XdataName="Form"
          s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""",21)"  
          if $d(@GL){
@@ -161,11 +163,22 @@ panel / resize panel / form  </Description>
 	 
 	
 	   k filtr
-	   d ..readJSFunctionFromCacheClass("%ZDFM.page")
-	   s filtr("%ZDFM.page")=1
+	   
+	   &js<  var ThisClass="#(ParentClass)#"; >
+       d ..readJSFunctionFromCacheClass("%ZDFM.page")
+       s filtr("%ZDFM.page")=1
 	   w ! &js<var cspHttpServerMethod=SendServer; >
-	  
-	
+	       &js<var windowhashtablist={}; >
+ 	    s GL="^oddDEF(""%ZDFM.page"",""m"",""init"",30)"
+ 	    if $d(@GL){
+ 	       s ind=""
+ 	       for {
+             s ind=$o(@GL@(ind))
+             q:ind=""
+             w !,@GL@(ind)
+ 	       }
+ 	    }
+ 
        s ClassCSP=ParentClass
        for ind=1:1:$l(ClassCSP,","){
 	      d $system.OBJ.GetDependencies($p(ClassCSP,",",ind),.included)
@@ -177,8 +190,58 @@ panel / resize panel / form  </Description>
             d ..readJSFunctionFromCacheClass(ClassParentTmp)
             s filtr(ClassParentTmp)=1
           } 
-	   }	
+	   }
+	   
 	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="init">
+<Language>javascript</Language>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+ var OpenDialogreturnValue;
+/// Для передачи возвращаемых значений из "модальных" окон
+if (!('dialogArguments' in window)) {
+	Object.defineProperty(window, "returnValue", {
+		_retval: undefined,
+		get: function () {
+			return this._retval;
+		},
+		set: function (val) {
+			this._retval = val;
+			if (window.opener) {
+				window.opener.postMessage(JSON.stringify(
+					{
+						eventType: 'returnValue',
+						data: val
+					}
+				), location.origin);
+			}
+		}
+	});
+};
+
+window.addEventListener('DOMContentLoaded', function () {
+	if (window.opener) {
+		window.opener.postMessage(JSON.stringify(
+			{
+				eventType: 'DOMContentLoaded'
+			}
+		), location.origin);
+	}
+})
+
+/// Отслеживание закрытия окна
+window.addEventListener('unload', function () {
+	if (window.opener) {
+		window.opener.postMessage(JSON.stringify(
+			{
+				eventType: 'unload'
+			}
+		), location.origin);
+	}
+});
 ]]></Implementation>
 </Method>
 
@@ -191,7 +254,9 @@ panel / resize panel / form  </Description>
 <ReturnType>%Library.Boolean</ReturnType>
 <Implementation><![CDATA[
 	
-	
+	 if $L(..#CodePage )>0 {
+  	   s %response.CharSet=..#CodePage  
+	 }
 	 if %request.Get("LoadDFM","")'=""{
 		 // Do %response.SetHeader("Content-Type","text/plain")   
 		 Do %response.SetHeader("Content-Type","application/javascript")   
@@ -203,9 +268,6 @@ panel / resize panel / form  </Description>
 		 Do %response.SetHeader("Content-Type","application/javascript")   
 		 q 1
 	 }
-	 
-	 
-	 
 	 
      if ##this'="%ZDFM.page"{ 
         Do %response.SetHeader("Content-Type","text/html")   
@@ -263,6 +325,15 @@ panel / resize panel / form  </Description>
 ]]></Implementation>
 </Method>
 
+<Method name="ExecFragOld">
+<Description>
+Метод разбики исходного текста на Cache` код и HTML текст</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
+<Implementation><![CDATA[    q:SrcCode=""   q:Beg=""    q:End=""    for ExecFragInd=1:1:$l(SrcCode,End){  s tmp=$p(SrcCode,End,ExecFragInd)   s Html=$p(tmp,Beg,1)     s Code=$p(tmp,Beg,2)   w Html   TRY {     x Code    } CATCH ErrorHandle {    zw ErrorHandle  }    }
+]]></Implementation>
+</Method>
+
 <Method name="readJSFunctionFromCacheClass">
 <Description><![CDATA[
 <pre>
@@ -285,21 +356,15 @@ panel / resize panel / form  </Description>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
      s onEventFun=",onblur,onerror,onfocus,onload,onresize,onscroll,onbeforeunload,onhashchange,onlanguagechange,onmessage,onoffline,ononline,onpagehide,onpageshow,onpopstate,onrejectionhandled,onstorage,onunhandledrejection,onunload,onabort,oncancel,oncanplay,oncanplaythrough,onchange,onclick,onclose,oncontextmenu,oncuechange,ondblclick,ondrag,ondragend,ondragenter,ondragleave,ondragover,ondragstart,ondrop,ondurationchange,onemptied,onended,oninput,oninvalid,onkeydown,onkeypress,onkeyup,onloadeddata,onloadedmetadata,onloadstart,onmousedown,onmouseenter,onmouseleave,onmousemove,onmouseout,onmouseover,onmouseup,onmousewheel,onpause,onplay,onplaying,onprogress,onratechange,onreset,onseeked,onseeking,onselect,onshow,onstalled,onsubmit,onsuspend,ontimeupdate,ontoggle,onvolumechange,onwaiting,onauxclick,ongotpointercapture,onlostpointercapture,onpointercancel,onpointerdown,onpointerenter,onpointerleave,onpointermove,onpointerout,onpointerover,onpointerup,onbeforecopy,onbeforecut,onbeforepaste,oncopy,oncut,onpaste,onsearch,onselectstart,onwheel,onwebkitfullscreenchange,onwebkitfullscreenerror"
+     k filtr
      s ClassOref=##class(%ClassDefinition).%OpenId(ParentClassName)
      if ClassOref {
        s ConstructMethod=$p(ParentClassName,".",$l(ParentClassName,"."))
        s ConstructMethodIndex=""
        s count=ClassOref.Methods.Count()
        for i=1:1:count {
-            if (MethodName=""){
-               continue:$l(ClassOref.Methods.GetAt(i).Name,"OnPage")'=1
-               continue:ClassOref.Methods.GetAt(i).Name="OnPreHTTP"
-               continue:ClassOref.Methods.GetAt(i).Name="OnPostHTTP"
-               continue:ClassOref.Methods.GetAt(i).Name="getLibOne"
-               continue:ClassOref.Methods.GetAt(i).Name="GetJSMethodFromClientMethod"
-               continue:ClassOref.Methods.GetAt(i).Name="readJSFunctionFromCacheClass"
-            }else{
-                continue:ClassOref.Methods.GetAt(i).Name'=MethodName   
+            if (MethodName'=""){
+               continue:ClassOref.Methods.GetAt(i).Name'=MethodName   
             }
            /// [ ServerOnly = 1 ]
            // continue:'$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,59))
@@ -308,11 +373,13 @@ panel / resize panel / form  </Description>
            /// [ WebMethod ]
            continue:'$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,51))
            continue:^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,51)'=1
-          
           if $ZCVT(ClassOref.Methods.GetAt(i).Name,"L")=$ZCVT(ConstructMethod,"L"){
              s ConstructMethodIndex=i
              continue    
           }
+          continue:$d(filtr(ClassOref.Methods.GetAt(i).Name))
+          s filtr(ClassOref.Methods.GetAt(i).Name)=1
+          
           
           if DrawDescript=1 {
              if $l(ClassOref.Methods.GetAt(i).Description)>0,ParentClassName'=##this{
@@ -323,7 +390,7 @@ panel / resize panel / form  </Description>
           }
           // Получаем JS представление Cache клиент метода
            if ClassOref.Methods.GetAt(i).Language="javascript" {
-               w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function("
+	           w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function("
                s param=ClassOref.Methods.GetAt(i).FormalSpec
                for ind=1:1:$l(param,","){
                    s subParam=$p(param,",",ind)
@@ -333,9 +400,12 @@ panel / resize panel / form  </Description>
                    w subParam
                }
                w "){",!
-                 d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
-                 // w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
-                 // w ClassOref.Methods.GetAt(i).Code
+                  s Code=ClassOref.Methods.GetAt(i).Code
+                  d ..ExecFragOld(Code,"/*(",")*/")
+                 //  w ..ReplaceFragText(Code,"/*(",")*/")
+                 //  d ..ExecFrag(Code,"/*(",")*/")
+                 //  w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+                 //  w ClassOref.Methods.GetAt(i).Code
                  w !,"};"
                 
             }
@@ -354,19 +424,21 @@ panel / resize panel / form  </Description>
            }
                 
          }
-         // После отрисовки функций, создаем конструктор( если конечно он встретился ранее)
-         if ConstructMethodIndex'="" {
-           s i=ConstructMethodIndex
-           if ClassOref.Methods.GetAt(i).Language="javascript" {
-              d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
-              ; w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
-           }
-           if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
-              ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
-              s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
-              w " cspHttpServerMethod('"_WEVENT_"',arguments);"
-           }
-         }
+        
+       //  // После отрисовки функций, создаем конструктор( если конечно он встретился ранее)
+       //  if ConstructMethodIndex'="" {
+       //    s i=ConstructMethodIndex
+       //    if ClassOref.Methods.GetAt(i).Language="javascript" {
+       //       d ..ExecFrag(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+       //       ; w ..ReplaceFragText(ClassOref.Methods.GetAt(i).Code,"/*(",")*/")
+       //    }
+       //    if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
+       //       ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
+       //       s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
+       //       w " cspHttpServerMethod('"_WEVENT_"',arguments);"
+       //    }
+       //  }
+         
        }
        q ""
 ]]></Implementation>
@@ -407,10 +479,9 @@ panel / resize panel / form  </Description>
 
 <Method name="WriteFragCode">
 <Description>
-Удаление текста внутри тэгов</Description>
+Удаление текста внутри тэгов // [ ProcedureBlock = 0 ]</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>SrcCode="",WriteFragCodeBeg="",WriteFragCodeEnd=""</FormalSpec>
-<ProcedureBlock>0</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
      q:SrcCode="" ""
@@ -428,11 +499,12 @@ panel / resize panel / form  </Description>
           if $l(CodeFrag)>0{
                TRY {
                  XECUTE ("(out) SET out="_CodeFrag,.outCode)
-		         s Res=Res_outCode
+                 s Res=Res_outCode
                } CATCH{
                  s Res=Res_WriteFragCodeBeg_CodeFrag_WriteFragCodeEnd	        
                }                 
 	      }
+	      s HtmlFrag=""
           q:SrcCode=""
       }
       q Res
@@ -441,10 +513,9 @@ panel / resize panel / form  </Description>
 
 <Method name="ClearFragCode">
 <Description>
-Удаление текста внутри тэгов</Description>
+Удаление текста внутри тэгов//[ ProcedureBlock = 0 ]</Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
-<ProcedureBlock>0</ProcedureBlock>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
      q:SrcCode="" ""
@@ -548,11 +619,11 @@ panel / resize panel / form  </Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>SrcCode="",Beg="",End=""</FormalSpec>
 <Implementation><![CDATA[
-     q:SrcCode=""
-     q:Beg=""
-     q:End=""
-     q:$l(SrcCode,Beg)=1 SrcCode
-     q:$l(SrcCode,End)=1 SrcCode
+     if SrcCode="" w SrcCode
+     if Beg="" w SrcCode
+     if End="" w SrcCode
+     if $l(SrcCode,Beg)=1 w SrcCode
+     if $l(SrcCode,End)=1 w SrcCode
      for ind=1:1:$l(SrcCode,End){
         s tmp=$p(SrcCode,End,ind)
         s Html=$p(tmp,Beg,1)
@@ -606,7 +677,7 @@ panel / resize panel / form  </Description>
 <WebMethod>1</WebMethod>
 <ClientMethod>1</ClientMethod>
 <Implementation><![CDATA[
-    var arr=new Array();
+   var arr=new Array();
     if ((''+SendServer.arguments[1])=='[object Arguments]'){
        arr.push(SendServer.arguments[0]);     
        for(var ind in SendServer.arguments[1]){if (SendServer.arguments[1][ind]==undefined){continue;} arr.push(SendServer.arguments[1][ind]); }   
@@ -614,7 +685,7 @@ panel / resize panel / form  </Description>
        for(var ind in SendServer.arguments){if (SendServer.arguments[ind]==undefined){continue;} arr.push(SendServer.arguments[ind]); }   
     }
     var requestSendServer = new XMLHttpRequest();
-    requestSendServer.open('POST', '/*(   w $SYSTEM.CSP.GetDefaultApp($ZU(5))_"/"_$zcvt("%ZDFM.page","O","URL")_".cls"  )*/', false);
+    requestSendServer.open('POST', '/*(w $SYSTEM.CSP.GetDefaultApp($ZU(5))_"/"_$zcvt("%ZDFM.page","O","URL")_".cls")*/', false);
     requestSendServer.send(JSON.stringify(arr));  
     requestSendServer.ontimeout = function (e) {
           alert('Время ожидания ответа вышло!!!!');
@@ -623,6 +694,130 @@ panel / resize panel / form  </Description>
         return {"error":requestSendServer.status}
     }
     return requestSendServer.responseText;
+]]></Implementation>
+</Method>
+
+<Method name="ShowDialog">
+<FormalSpec>url,onCloseCallback</FormalSpec>
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+   if (typeof onCloseCallback !=='undefined'){      
+          if (typeof onCloseCallback == "string"){
+	         this.ShowDialogFunctionNameCallFromServer=onCloseCallback+''; 
+             onCloseCallback=function(ResVal){ 
+                try { var res=cspHttpServerMethod(this.ShowDialogFunctionNameCallFromServer,arguments);    eval(res); }catch (e) { console.log(res);  return res}
+             }
+	    }
+   }
+   var paramJsonStr=GetParamDialogWindow(url);
+   if (paramJsonStr.length>0){
+	   paramJson=JSON.parse(paramJsonStr);
+	   var param="";
+	   if (paramJson.Resize=="False"){ param=param+'  resizable=no,    ';}
+	   var title=paramJson.Caption;
+	   if (title==''){title=url;  }
+	   OpenDialog(url,title, paramJson.ClientWidth,  paramJson.ClientHeight ,onCloseCallback,param);
+   }
+]]></Implementation>
+</Method>
+
+<Method name="OpenDialog">
+<FormalSpec>url,title,w,h,onCloseCallback,param</FormalSpec>
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+	    if(title==undefined){title=url;}
+	    if(param==undefined){param='';}
+
+         // for(var ind in SendServer.arguments[1])	    
+         // onCloseCallback.arguments);
+        
+	    
+	    /// ----- проверка ранее открытого окна, и незакрытого -----
+        this.wo = undefined;
+        var myPopupUrl=null;
+        for (var k in windowhashtablist) {
+          if (windowhashtablist.hasOwnProperty(k)) {
+            if (k==title) {
+               this.wo=windowhashtablist[k]['window'];
+               myPopupUrl=windowhashtablist[k]['url'];
+               break
+            }
+          }
+        }
+        
+        
+        if (this.wo!=undefined){
+           if (this.wo.closed){
+               this.wo=undefined;
+           }else{
+              if (myPopupUrl==url){	           
+                 this.wo.focus();
+                 return this.wo;
+              }
+           } 
+        }
+      ///---------------------------------------------------------
+	var name =title;
+	var width=w;
+	if (w==undefined){ width = (screen.width / 2)};
+	if (w==''){ width = (screen.width / 2)};
+	if (w==null){ width = (screen.width / 2)};
+	var height = h;
+	if (h==undefined){ height = (screen.width / 2)};
+	if (h==''){ height = (screen.width / 2)};
+	if (h==null){ height = (screen.width / 2)};
+	var offset_x = screen.width / 2 - width / 2;
+	var offset_y = screen.height / 2 - height / 2;
+	this.retval = undefined;
+	var fclose = function () { if (!wo.closed) { return } window.removeEventListener('message', listener); }
+	var listener = function (event) {
+		var message = JSON.parse(event.data);
+		switch (message.eventType) {
+			case 'returnValue': {
+				// console.log('returnValue');
+				// console.log(message.data);
+				this.retval= message.data;
+				break;
+			};
+			case 'unload': {
+				// console.log('unload');
+			    if (typeof onCloseCallback ==='function'){
+				      onCloseCallback(this.retval);
+				}
+				window.removeEventListener('message', listener);
+				break;
+			};
+			case 'DOMContentLoaded': {
+				console.log('DOMContentLoaded');
+				break;
+			};
+			default: {
+
+			}
+		}
+	}
+	window.addEventListener('message', listener);
+	this.wo = window.open(url, name, param+' height=' + height + ', width=' + width + ', left=' + offset_x + ', top=' + offset_y + ' , scrollbars=yes, resizable=no ');
+    windowhashtablist[title]={'url':url, 'window': this.wo};
+	this.wo.focus();
+	return this.wo;
+]]></Implementation>
+</Method>
+
+<Method name="sleep">
+<Description>
+Пауза в программе</Description>
+<FormalSpec>sleepDuration</FormalSpec>
+<Language>javascript</Language>
+<WebMethod>1</WebMethod>
+<ClientMethod>1</ClientMethod>
+<Implementation><![CDATA[
+   var now = new Date().getTime();
+   while(new Date().getTime() < now + sleepDuration){ /* do nothing */ }
 ]]></Implementation>
 </Method>
 
@@ -1132,7 +1327,7 @@ d ##class(%ZDFM.page).Test()</Description>
 <ReturnType>%String</ReturnType>
 <Implementation><![CDATA[
 	
-	if $l(NameObj,":")=1,$e(NameObj,1,2)'=".."{  s Name=".."_NameObj  }
+   if $l(NameObj,":")=1,$e(NameObj,1,2)'=".."{  s Name=".."_NameObj  }
    if $e(NameObj,1,2)=".." {  s ClassName=##This,XdataName=$e(NameObj,3,$l(NameObj))
    }else{                  s ClassName=$p(NameObj,":",1),XdataName=$p(NameObj,":",2)  }
    s GL="^oddDEF("""_ClassName_""",""x"","""_XdataName_""",21)"  
@@ -1255,6 +1450,7 @@ d ##class(%ZDFM.page).Test()</Description>
 	   }  
        s ShablobDrawObject=ShablobDrawObject_@GLDrawObject@(GlIndexDrawObject)
    }
+  
    s nameDrawObject=""
    for {
 	   s nameDrawObject=$o(Object.%data(nameDrawObject))
@@ -1268,7 +1464,8 @@ d ##class(%ZDFM.page).Test()</Description>
 			  q:IndvalueDrawObject=""
 	          x " if '$d("_nameDrawObject_") { s "_nameDrawObject_"=##class(%ZEN.proxyObject).%New() }"  
 		      TRY { XECUTE ("(in) SET "_nameDrawObject_"."_IndvalueDrawObject_"=in     ", valueDrawObject.%data(IndvalueDrawObject)) } CATCH{ }	   
-		      s ShablobDrawObject=$replace(ShablobDrawObject,"["_nameDrawObject_"."_IndvalueDrawObject_"]",valueDrawObject.%data(IndvalueDrawObject))
+		      //****  ????????
+		      // s ShablobDrawObject=$replace(ShablobDrawObject,"["_nameDrawObject_"."_IndvalueDrawObject_"]",valueDrawObject.%data(IndvalueDrawObject))
 		   }
 	   }else{
           s ShablobDrawObject=$replace(ShablobDrawObject,"["_nameDrawObject_"]",valueDrawObject)
@@ -1424,6 +1621,59 @@ d ##class(%ZDFM.page).Test()</Description>
      q:res=1
    }
    q res
+]]></Implementation>
+</Method>
+
+<Method name="GetParamDialogWindow">
+<Description>
+ SendServer(%ZDFM.page.GetParamDialogWindow,url);
+ SendServer(%ZDFM.page.GetParamDialogWindow,url);</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>URL=""</FormalSpec>
+<Language>cache</Language>
+<ReturnType>%String</ReturnType>
+<WebMethod>1</WebMethod>
+<Implementation><![CDATA[
+	 	s ParentClass=""
+        s ParentClass=URL
+	    s ParentClass=$replace(ParentClass,"/?","?")
+	    s ParentClass= $SYSTEM.CSP.GetClassName(ParentClass)   
+        s XdataName="Form"
+        s GL="^oddDEF("""_ParentClass_""",""x"","""_XdataName_""",21)"  
+        if '$d(@GL){ q "" }
+        s lineNum="",lineNum=$o(@GL@(lineNum))
+        if lineNum'="" s lineNum=$o(@GL@(lineNum))
+        if lineNum'=""{
+	      s line=@GL@(lineNum)
+	      s line=$p(line,": ",2)
+	      if line'="TRootForm"  q ""   ; если форма не является модыльным окном, тогдавыходим
+        }  
+        /*        
+         Left = 0
+         Top = 0
+         Caption = 'rrrrwerqwer'
+         ClientHeight = 180
+         ClientWidth = 309
+        */
+        if lineNum'="" {
+	       w "{" s count=0
+           for {  
+              s lineNum=$o(@GL@(lineNum)) 
+              q:lineNum="" 
+              s NameVal=@GL@(lineNum)
+              q:$l(NameVal,"  object ")>1              
+              s NameVal=$tr(NameVal," ","")
+              s nam=$p(NameVal,"=",1)
+              s val=$p(NameVal,"=",2)
+              s val=$tr(val,"'","")
+              s count=count+1
+              w:count'=1 ","
+              if nam="ClientHeight" s val=val+39
+              w """"_nam_""":"""_val_""""
+           }
+	       w "}" 
+        }
+    	q ""
 ]]></Implementation>
 </Method>
 </Class>
