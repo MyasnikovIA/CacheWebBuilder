@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2013.1.4 (Build 801)" ts="2018-11-23 19:39:41">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-23 20:07:24">
 <Class name="%ZDFM.page">
 <Super>%CSP.Page</Super>
-<TimeChanged>64975,69458.529264</TimeChanged>
+<TimeChanged>64975,72290.048853</TimeChanged>
 <TimeCreated>64964,45915.102647</TimeCreated>
 
 <Parameter name="CodePage">
@@ -416,9 +416,9 @@ window.addEventListener('unload', function () {
                    ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
                    s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
                   if '$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)) {
-                        &js< try { var res=cspHttpServerMethod('#(WEVENT)#',arguments);    eval(res); }catch (e) { console.log(res);  return res}>
+                        &js< try { var res=cspHttpServerMethod('#(WEVENT)#');    eval(res); }catch (e) { console.log(res);  return res}>
                   } Else {
-                     w "   return cspHttpServerMethod('"_WEVENT_"',arguments);"
+                     w "   return cspHttpServerMethod('"_WEVENT_"');"
                   }
                   w !,"};"
            }
@@ -910,7 +910,6 @@ d ##class(%ZDFM.page).LoadDFM("%ZDFM.demo.demo3:Form")</Description>
 		          s MethodDestroy=##class(%Dictionary.MethodDefinition).%New(tt.Name_":"_Value)
                   s MethodDestroy.Language=##class(%ZDFM.page).#Language
                   // objectscript
-                  
                   s MethodDestroy.ClassMethod=1
                   s MethodDestroy.WebMethod=1 
                   s MethodDestroy.FormalSpec="args="""""
