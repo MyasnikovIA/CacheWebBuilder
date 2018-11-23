@@ -1,4 +1,4 @@
-# CacheWebBuilder
+# CacheWebBuilder (The project is in the process of alpha testing.)
 <!--http://embedyoutube.org/-->
 1) Install class
    d $SYSTEM.OBJ.Load("%ZDFM.Component.xml","c")
