@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.2 (Build 651)" ts="2018-11-23 20:35:46">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2017.2 (Build 651)" ts="2018-11-27 22:06:41">
 <Class name="%ZDFM.Component.BootStrapCss">
 <Super>%RegisteredObject</Super>
 <TimeChanged>64971,59564.514818</TimeChanged>
@@ -181,7 +181,7 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLAudio">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,77040.764259</TimeChanged>
+<TimeChanged>64979,77158.501936</TimeChanged>
 <TimeCreated>64969,77626.144822</TimeCreated>
 
 <Method name="PreDraw">
@@ -214,7 +214,7 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLButton">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,74827.403158</TimeChanged>
+<TimeChanged>64979,76378.667088</TimeChanged>
 <TimeCreated>64968,75649.396347</TimeCreated>
 
 <Method name="PreDraw">
@@ -243,7 +243,7 @@ notepad.addEventListener("click",function(event){
                 background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
                 font-family: '#($g(FontName,"Arial"))#';
                 font-size:#($g(FontSize,"12"))#; #(..IsVisible(Visible))##(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
-                [Style.Strings]" [Attribute.Strings]>[Text]
+                [Style.Strings]"  [Attribute.Strings] >[Text]
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -260,7 +260,7 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLCalendar">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,40675.075436</TimeChanged>
+<TimeChanged>64979,77186.895028</TimeChanged>
 <TimeCreated>64974,39194.422712</TimeCreated>
 
 <Method name="PreDraw">
@@ -288,7 +288,7 @@ notepad.addEventListener("click",function(event){
                 color: #(..DecodeColor($g(FontColor,"")))# ;
                 background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
                 font-family: '#($g(FontName,"Arial"))#';
-                font-size:#($g(FontSize,"12"))#; #(..IsVisible(Visible))##(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#  [Style.Strings]" #($case($l($g(MinData,"")),0:"",:" min='[MinData]' "))#  #($case($l($g(MaxData,"")),0:"",:" max='[MaxData]' "))#
+                font-size:#($g(FontSize,"12"))#; #(..IsVisible(Visible))##(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#  #(Style.Strings)#" #($case($l($g(MinData,"")),0:"",:" min='[MinData]' "))#  #($case($l($g(MaxData,"")),0:"",:" max='[MaxData]' "))#
            [Attribute.Strings]/>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
@@ -307,7 +307,7 @@ notepad.addEventListener("click",function(event){
 <Description>
 OK</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,75426.055477</TimeChanged>
+<TimeChanged>64979,77212.174303</TimeChanged>
 <TimeCreated>64967,75067.907109</TimeCreated>
 
 <Method name="PreDraw">
@@ -324,7 +324,6 @@ OK</Description>
 <Data><![CDATA[
 <dfm><![CDATA[
 <div for="[ObjectName]" 
-     
      style="position:absolute;
             /* border: 1px solid blue; */
             left:[Left];  
@@ -335,9 +334,9 @@ OK</Description>
             color: #(..DecodeColor($g(FontColor,"")))# ;
             background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
             font-family: '#($g(FontName,"Arial"))#';
-            font-size:#($g(FontSize,"12"))#;#(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# [Style.Strings]"
+            font-size:#($g(FontSize,"12"))#;#(..IsVisible(Visible))# #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# #(Style.Strings)#"
      >
-    <input type="checkbox" id="[ObjectName]" name="[ObjectName]"   #($case(Checked,"True":"checked='checked'",:""))#  style=" width:#(Height-3)#;  height:#(Height-3)# ;vertical-align: -#(Height/4)#;"  #($case($g(Disabled,""),"True":"disabled='disabled'",:""))#  [Attribute.Strings] >[Text][InnerHTML.Strings]
+    <input type="checkbox" id="[ObjectName]" name="[ObjectName]"   #($case(Checked,"True":"checked='checked'",:""))#  style=" width:#(Height-3)#;  height:#(Height-3)# ;vertical-align: -#(Height/4)#;"  #($case($g(Disabled,""),"True":"disabled='disabled'",:""))#  [Attribute.Strings]>[Text][InnerHTML.Strings]
 </div>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
@@ -354,7 +353,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLComboBox">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,75665.203535</TimeChanged>
+<TimeChanged>64979,74304.641276</TimeChanged>
 <TimeCreated>64969,46555.789501</TimeCreated>
 
 <Method name="PreDraw">
@@ -405,7 +404,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLComponent">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,76870.790791</TimeChanged>
+<TimeChanged>64979,77239.575658</TimeChanged>
 <TimeCreated>64970,76798.0733</TimeCreated>
 
 <Method name="PreDraw">
@@ -550,8 +549,20 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLCss">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,77867.365403</TimeChanged>
+<TimeChanged>64979,77257.569793</TimeChanged>
 <TimeCreated>64969,70595.740274</TimeCreated>
+
+<Method name="DrawDeb">
+<Description>
+##class(%ZDFM.Component.HTMLCss).DrawDeb(CssCode)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>CssCode</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	zw CssCode
+	q ""
+]]></Implementation>
+</Method>
 
 <Method name="PreDraw">
 <ClassMethod>1</ClassMethod>
@@ -566,7 +577,7 @@ notepad.addEventListener("click",function(event){
 <XData name="ShablonBeginTag">
 <Data><![CDATA[
 <dfm><![CDATA[
-  <style  id="[ObjectName]">[InnerHTML.Strings]
+  <style id="[ObjectName]">[CssCode.Strings]</style>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -574,8 +585,7 @@ notepad.addEventListener("click",function(event){
 <XData name="ShablonEndTag">
 <Data><![CDATA[
 <dfm><![CDATA[
- </style>
-]]]]><![CDATA[></dfm>
+ ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
 </Class>
@@ -616,7 +626,7 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLDiv">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,86278.838114</TimeChanged>
+<TimeChanged>64979,77282.239921</TimeChanged>
 <TimeCreated>64970,69281.086915</TimeCreated>
 
 <Method name="PreDraw">
@@ -670,7 +680,7 @@ notepad.addEventListener("click",function(event){
 <Description>
 ----OK----</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,77470.403714</TimeChanged>
+<TimeChanged>64979,77300.617651</TimeChanged>
 <TimeCreated>64968,67425.493907</TimeCreated>
 
 <Method name="PreDraw">
@@ -718,7 +728,7 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLFlash">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,84688.73083</TimeChanged>
+<TimeChanged>64979,77318.994729</TimeChanged>
 <TimeCreated>64969,78322.014836</TimeCreated>
 
 <Method name="PreDraw">
@@ -768,7 +778,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLForm">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,76017.39822</TimeChanged>
+<TimeChanged>64979,77339.752527</TimeChanged>
 <TimeCreated>64969,62127.784591</TimeCreated>
 
 <Method name="PreDraw">
@@ -817,7 +827,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLH">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,76312.088397</TimeChanged>
+<TimeChanged>64979,77360.041953</TimeChanged>
 <TimeCreated>64969,67005.366219</TimeCreated>
 
 <Method name="PreDraw">
@@ -850,7 +860,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLIframe">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,76197.287605</TimeChanged>
+<TimeChanged>64979,77372.526547</TimeChanged>
 <TimeCreated>64969,67285.390312</TimeCreated>
 
 <Method name="PreDraw">
@@ -893,7 +903,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLImage">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,56994.810335</TimeChanged>
+<TimeChanged>64979,77384.579037</TimeChanged>
 <TimeCreated>64971,56741.63588</TimeCreated>
 
 <Method name="PreDraw">
@@ -941,7 +951,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLJavaScript">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64975,50041.633121</TimeChanged>
+<TimeChanged>64979,77402.396792</TimeChanged>
 <TimeCreated>64969,70321.637896</TimeCreated>
 
 <Method name="PreDraw">
@@ -957,8 +967,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 <XData name="ShablonBeginTag">
 <Data><![CDATA[
 <dfm><![CDATA[
-  <script  id="[ObjectName]" language="JavaScript" #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))# #($case($l($g(TypeScript,"")),0:"",:" TypeScript='[TypeScript]'"))# [Attribute.Strings]>#(InnerHTML.Strings)#
-  [InnerHTML.Strings]
+  <script  id="[ObjectName]" language="JavaScript" #($case($l($g(Src,"")),0:"",:" Src='[Src]'"))# #($case($l($g(TypeScript,"")),0:"",:" TypeScript='[TypeScript]'"))# [Attribute.Strings]>[JsCode.Strings]</script>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -966,7 +975,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 <XData name="ShablonEndTag">
 <Data><![CDATA[
 <dfm><![CDATA[
-</script>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -1013,7 +1021,7 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 <Description>
 OK</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,73024.32475</TimeChanged>
+<TimeChanged>64979,77438.538133</TimeChanged>
 <TimeCreated>64968,28298.939709</TimeCreated>
 
 <Method name="PreDraw">
@@ -1092,7 +1100,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLListBox">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,75871.593668</TimeChanged>
+<TimeChanged>64979,77003.673583</TimeChanged>
 <TimeCreated>64969,59201.208738</TimeCreated>
 
 <Method name="PreDraw">
@@ -1103,9 +1111,19 @@ OK</Description>
 <Method name="PostDraw">
 <ClassMethod>1</ClassMethod>
 <FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[
+	w "<script>" 
+	w Object.ObjectName_".getSelectList = function(){"
+    w " return Array.from(document.getElementById('"_Object.ObjectName_"').options).filter(option => option.selected).map(option => option.value);"
+    w "}" 
+	w "</script>" 
+	// w " Array.from(document.getElementById('HTMLListBox1').options).filter(option => option.selected).map(option => option.value)+']';"
+]]></Implementation>
 </Method>
 
 <XData name="ShablonBeginTag">
+<Description>
+select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and not (nvl(UserName,'')='')</Description>
 <Data><![CDATA[
 <dfm><![CDATA[
  <select  id="[ObjectName]" name="[ObjectName]"  multiple=1    #($case($g(Disabled,""),"True":"disabled='disabled'",:""))#  
@@ -1126,7 +1144,7 @@ OK</Description>
                 #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
                 [Style.Strings]"
            [Attribute.Strings]>#(..CalcOption($case($l($g(OptionItem,"")),0:"",:OptionItem.Strings),"[OptionList]","[Text]"))#
- </select> 
+     </select> 
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -1142,7 +1160,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLMemo">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,74965.488368</TimeChanged>
+<TimeChanged>64979,79233.234892</TimeChanged>
 <TimeCreated>64971,85873.165044</TimeCreated>
 
 <Method name="PreDraw">
@@ -1158,7 +1176,7 @@ OK</Description>
 <XData name="ShablonBeginTag">
 <Data><![CDATA[
 <dfm><![CDATA[
- <textarea
+<textarea
      
        id="[ObjectName]" name="[ObjectName]"  #($case($g(Disabled,""),"True":"disabled='disabled'",:""))#
         style="position:absolute;
@@ -1177,7 +1195,7 @@ OK</Description>
                 #(..IsVisible(Visible))#
                 #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))# #($case($g(NoWrap,""),"True":"white-space: nowrap;overflow:    scroll;overflow-y:  hidden;overflow-x:  scroll;overflow:    -moz-scrollbars-horizontal;",:""))# 
                 [Style.Strings]"
-           [Attribute.Strings]>[Text][InnerHTML.Strings]</textarea>
+                [Attribute.Strings]>[Text][InnerHTML.Strings]</textarea>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -1193,7 +1211,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLProgressBar">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,77860.695919</TimeChanged>
+<TimeChanged>64979,77465.289753</TimeChanged>
 <TimeCreated>64971,82719.481685</TimeCreated>
 
 <Method name="PreDraw">
@@ -1338,7 +1356,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLStringGrid">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,31281.69361</TimeChanged>
+<TimeChanged>64979,77501.622737</TimeChanged>
 <TimeCreated>64972,31266.83173</TimeCreated>
 
 <Method name="PreDraw">
@@ -1385,12 +1403,62 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLTable">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,27845.330615</TimeChanged>
+<TimeChanged>64979,56367.993522</TimeChanged>
 <TimeCreated>64972,27845.330615</TimeCreated>
 
 <Method name="PreDraw">
+<Description>
+select * from %SYS.ProcessQuery </Description>
 <ClassMethod>1</ClassMethod>
 <FormalSpec>Object:%ZEN.proxyObject=""</FormalSpec>
+<Implementation><![CDATA[
+	// <table style="width:100%;height:100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	// &html<<table id="#(Object.ObjectName)#" name="#(Object.ObjectName)#"  style="position:absolute; overflow:hidden; padding-top:1.5%; border: 1px solid blue; left:#(Object.Left)#; top:#(Object.Top)#; width:#(Object.Width)#; height:#(Object.Height)#;#(Object.Style.Strings)#" #(Object.Attribute.Strings)# >>
+	&html<<table id="#(Object.ObjectName)#" name="#(Object.ObjectName)#" style="position:absolute; left:#(Object.Left)#; top:#(Object.Top)#; width:#(Object.Width)#; height:#(Object.Height)#; #(Object.Style.Strings)#" #(Object.Attribute.Strings)# >>
+	if $d(Object.%data("Filtr")){
+	   s Filtr= Object.Filtr.Strings
+	   // zw Filtr
+	}
+	if $d(Object.%data("SQLQuery")){
+	  s SqlStrTmp=Object.SQLQuery.Strings
+	  s SQLobj=##class(%SQL.Statement).%New()
+      d SQLobj.%Prepare(SqlStrTmp)
+      s DataSet=SQLobj.%Execute()
+      s QMeta=DataSet.%GetMetaData()
+      w !," <thead style='background: #fc0'>"
+      w "<tr>"      
+      for ColNum=1:1:QMeta.columnCount
+      {
+         s nam=QMeta.columns.GetAt(ColNum).colName
+         w "<td width='15%' >"_nam_"</td>"
+      }
+      w "</tr>"      
+      w "</thead>"      
+      
+      s CountRowInList=0
+      if $d(Object.%data("CountRowInList")){
+        s CountRowInList=Object.CountRowInList
+      }
+      
+      s CountRaw=0
+      w !," <tbody style='background: #ccc'>"
+      while DataSet.%Next()
+      {
+         s CountRaw=CountRaw+1
+         if CountRowInList>0,CountRaw>CountRowInList  q
+         w !,"<tr>" 
+	     for ColNum=1:1:QMeta.columnCount
+         {
+            s val=DataSet.%GetData(ColNum)
+            ; s nam=QMeta.columns.GetAt(ColNum).colName
+            w "<td>"_val_"</td>"
+        }
+        w "</tr>" 
+      }	
+      w "</tbody>"
+	}
+	&html<</table>>
+]]></Implementation>
 </Method>
 
 <Method name="PostDraw">
@@ -1399,28 +1467,11 @@ OK</Description>
 </Method>
 
 <XData name="ShablonBeginTag">
+<Description><![CDATA[
+    <table id="[ObjectName]" name="[ObjectName]"  style="position:absolute; overflow:hidden; padding-top:1.5%; border: 1px solid blue; left:[Left]; top:[Top];  width:[Width]; height:[Height]; #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#[Style.Strings]"[Attribute.Strings]>
+    </table>               ]]></Description>
 <Data><![CDATA[
 <dfm><![CDATA[
-<table
-       id="[ObjectName]" name="[ObjectName]"   
-        #($case($g(Enabled,""),"False":"disabled='disabled'",:""))# 
-        style="position:absolute;
-                overflow:hidden; 
-                padding-top:1.5%;
-                 border: 1px solid blue; 
-                left:[Left];  
-                top:[Top];  
-                width:[Width];  
-                height:[Height]; 
-                vertical-align: -3;
-                color: #(..DecodeColor($g(FontColor,"")))# ;
-                background-color:#(..DecodeColor($g(BackGroundColor,"")))# ;                
-                font-family: '#($g(FontName,"Arial"))#';
-                font-size:#($g(FontSize,"12"))#;
-                #(..IsVisible(Visible))#
-                #(..CalcCursor($g(Cursor,""),$g(CursorURL,"")))#
-                [Style.Strings]"
-           [Attribute.Strings]>[Text][InnerHTML.Strings]
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -1428,7 +1479,6 @@ OK</Description>
 <XData name="ShablonEndTag">
 <Data><![CDATA[
 <dfm><![CDATA[
-  </table>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
 </XData>
@@ -1437,7 +1487,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLTd">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,27764.175282</TimeChanged>
+<TimeChanged>64979,77526.490201</TimeChanged>
 <TimeCreated>64972,27764.175282</TimeCreated>
 
 <Method name="PreDraw">
@@ -1539,7 +1589,7 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLTimer">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,81777.462202</TimeChanged>
+<TimeChanged>64976,28104.389821</TimeChanged>
 <TimeCreated>64971,60658.966879</TimeCreated>
 
 <Method name="PreDraw">
@@ -1561,15 +1611,18 @@ OK</Description>
 <XData name="ShablonBeginTag">
 <Data><![CDATA[
 <dfm><![CDATA[
-
 <script  id="[ObjectName]" language="JavaScript">
-    
-    var tick[ObjectName]=function(){
+     var timerId[ObjectName]; 
+     var timerId[ObjectName]Interval=[Interval]; 
+     var tick[ObjectName]=function(){
 	    [InnerHTML.Strings]
 	    #($case($l($g(OnTimer,"")),0:"",:"  [OnTimer]();"))#
-        timerId[ObjectName] = setTimeout(tick[ObjectName], [Interval]);
-    }
-    var timerId[ObjectName] = setTimeout(tick[ObjectName], [Interval]);
+        timerId[ObjectName] = setTimeout(tick[ObjectName], timerId[ObjectName]Interval);
+     }
+     [ObjectName].Start=function(){  timerId[ObjectName] = setTimeout(tick[ObjectName], timerId[ObjectName]Interval); }
+     [ObjectName].Stop=function(){ clearTimeout(timerId[ObjectName]); }
+     [ObjectName].SetInterval=function(num){ timerId[ObjectName]Interval=num; }
+     #($case($g(Enabel,"False"), "False":"" ,"True":"[ObjectName].Start();" ,:""))#
 </script>
 ]]]]><![CDATA[></dfm>
 ]]></Data>
