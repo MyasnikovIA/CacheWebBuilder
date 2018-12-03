@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2017.2 (Build 651)" ts="2018-11-27 22:06:54">
+<Export generator="Cache" version="25">
 <Class name="%ZDFM.page">
 <Super>%CSP.Page</Super>
-<TimeChanged>64979,79348.306838</TimeChanged>
 <TimeCreated>64964,45915.102647</TimeCreated>
 
 <Parameter name="CodePage">
@@ -60,7 +59,21 @@ panel / resize panel / form  </Description>
 	    d ..AutoAddSupperClass(NameSpace,ClassName)
 	    q 1
     }
-    
+    if %request.Get("LoadMethod","")'=""{
+	    s AOldName=%request.Get("AOldName","")
+	    s NewName=%request.Get("NewName","")
+	    d ..LoadMethod(AOldName,NewName)
+	    q 1
+    }
+    if %request.Get("SaveMethod","")'=""{
+	    s AOldName=%request.Get("AOldName","")
+	    s NewName=%request.Get("NewName","")
+	    s Language=%request.Get("Language","")
+	    s Arguments=%request.Get("Arguments","")
+        s ReName=%request.Get("ReName","")
+	    d ..SaveMethod(AOldName,NewName,Language,Arguments,ReName)
+	    q 1
+    }
     
 	
  /// Вычитываем тело POST запроса
@@ -411,14 +424,27 @@ window.addEventListener('unload', function () {
             }
            // Получаем JS представление Cache класс метода
            if ClassOref.Methods.GetAt(i).Language=##class(%ZDFM.page).#Language {
-                   w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function(){",!
+                   #dim Method as %Dictionary.MethodDefinition=ClassOref.Methods.GetAt(i)
+                   s ArgumentsSrc=Method.FormalSpec
+                   s ArgumentsDst=""
+                   for ind=1:1:$l(ArgumentsSrc,","){
+	                   s one=$p(ArgumentsSrc,",",ind)
+	                   s one=$p(one,"=",1)
+	                   s one=$p(one,":",1)
+	                   s:ind'=1 ArgumentsDst=ArgumentsDst_","
+	                   s ArgumentsDst=ArgumentsDst_one  
+                   }
+                   
+                   w !,"/*"_ArgumentsDst_"*/",!
+                   w !,"var "_ClassOref.Methods.GetAt(i).Name_"=function("_ArgumentsDst_"){",!
                    ; if $d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)){ w "return "}
                    ; s WEVENT=$$$cspEncode(%session.Key,$lb(ParentClassName_"."_ClassOref.Methods.GetAt(i).Name))
                    s WEVENT=ParentClassName_"."_ClassOref.Methods.GetAt(i).Name
+                   s:$l(ArgumentsDst)>0 ArgumentsDst=","_ArgumentsDst
                   if '$d(^oddDEF(ParentClassName,"m",ClassOref.Methods.GetAt(i).Name,42)) {
-                        &js< try {  var res=cspHttpServerMethod('#(WEVENT)#' ,arguments); eval(res); }catch (e) { console.log(res);  return res}>
+                        w " try {  var res=cspHttpServerMethod('"_WEVENT_"' "_ArgumentsDst_" ); eval(res); }catch (e) { console.log(res);  return res} "
                   } Else {
-                     w "   return cspHttpServerMethod('"_WEVENT_"',arguments);"
+                      w "   return cspHttpServerMethod('"_WEVENT_"'  "_ArgumentsDst_");"
                   }
                   w !,"};"
            }
@@ -917,7 +943,7 @@ d ##class(%ZDFM.page).LoadDFM("%ZDFM.demo.demo3:Form")</Description>
                   // objectscript
                   s MethodDestroy.ClassMethod=1
                   s MethodDestroy.WebMethod=1 
-                  s MethodDestroy.FormalSpec="args="""""
+                  s MethodDestroy.FormalSpec="" 
                   d MethodDestroy.Implementation.WriteLine("  q ")
                   d tt.Methods.Insert(MethodDestroy)
                   d tt.%Save()
@@ -1547,6 +1573,8 @@ d ##class(%ZDFM.page).Test()</Description>
          continue:$e(NameObj,1,2)'="On"
          s ShorName=$e(NameObj,3,$l(NameObj))
          s ShorName=$zcvt(ShorName,"l" )
+         ; Переписать вычитывание аргументов
+         
          w "<script>"
          w " try {"
          w "   if ("_ObjectName_".addEventListener) { "_ObjectName_".addEventListener('"_ShorName_"', "_OneProper.%data(NameObj)_"); } "
@@ -1585,6 +1613,104 @@ d ##class(%ZDFM.page).Test()</Description>
     }
     d $zu(5,oldNs)
     q res
+]]></Implementation>
+</Method>
+
+<Method name="LoadMethod">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>AOldName="",NewName=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	w ##THIS
+	w !,$ZU(5)
+	s ClassName=##THIS
+	if AOldName=""  s AOldName=NewName
+	   if $d(^oddDEF(ClassName,"m",AOldName)){
+         if $d(^oddDEF(ClassName,"m",AOldName,27)){
+	       w !,^oddDEF(ClassName,"m",AOldName,27)
+         }else{ w !," "}
+         if $d(^oddDEF(ClassName,"m",AOldName,32)){
+	       w !,^oddDEF(ClassName,"m",AOldName,32)
+         }else{ w !," "}
+         if $d(^oddDEF(ClassName,"m",AOldName,30)){
+	       s ind="",countLine=0
+	       for {
+		      s ind=$o(^oddDEF(ClassName,"m",AOldName,30,ind))
+		      q:ind=""
+		      s countLine=countLine+1
+		      // w:countLine'=1 !
+		      w !,^oddDEF(ClassName,"m",AOldName,30,ind)
+	       }
+         }else{ w !," "}
+       }
+    
+    q ""
+]]></Implementation>
+</Method>
+
+<Method name="SaveMethod">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>AOldName="",NewName="",Language="",Arguments="",ReName=""</FormalSpec>
+<ReturnType>%String</ReturnType>
+<Implementation><![CDATA[
+	; w !,"AOldName: "_AOldName
+	; w !,"NewName: "_NewName
+	; w !,"Language: "_Language  
+	; w !,"Arguments: "_$SYSTEM.Encryption.Base64Decode(Arguments) 
+	; w !,"ReName: "_ReName
+	; q ""
+   if $isobject(%request.Content){
+	  s ClassName=##this
+      s tt=##class(%Dictionary.ClassDefinition).%OpenId(ClassName)
+      s SupperClass=tt.Super
+      s tt.Super="gggggg"
+      s tt.Super=SupperClass
+     if AOldName'="",AOldName'=NewName{
+	     if $d(^oddDEF(ClassName,"m",AOldName)){
+	        m ^oddDEF(ClassName,"m",AOldName)=^oddDEF(ClassName,"m",NewName)
+	     }
+	  }
+	  s AOldName=NewName
+	  
+	 if $d(^oddDEF(ClassName,"m",AOldName)){
+	    k ^oddDEF(ClassName,"m",AOldName,27)
+	    k ^oddDEF(ClassName,"m",AOldName,30)
+        k ^oddDEF(ClassName,"m",AOldName,32)
+        k ^oddDEF(ClassName,"m",AOldName,51)         
+      }
+      ; ^oddDEF(ClassName,"m",AOldName,27)="args="""""
+      ; ^oddDEF(ClassName,"m",AOldName,30)=3
+      ; ^oddDEF(ClassName,"m",AOldName,32)="cache"
+      ; ^oddDEF(ClassName,"m",AOldName,51)=1   ; WebMethod
+    
+      s ^oddDEF(ClassName,"m",AOldName,23)=1
+      s ^oddDEF(ClassName,"m",AOldName,27)=$SYSTEM.Encryption.Base64Decode(Arguments)
+      if Language="javascript" {
+	     s ^oddDEF(ClassName,"m",AOldName,32)=Language
+         s ^oddDEF(ClassName,"m",AOldName,70)=1
+         k ^oddDEF(ClassName,"m",AOldName,23)
+      }else{
+	     k ^oddDEF(ClassName,"m",AOldName,70)
+      }
+      if Language="cache"    s ^oddDEF(ClassName,"m",AOldName,32)=##class(%ZDFM.page).#Language
+      if Language="objectscript"    s ^oddDEF(ClassName,"m",AOldName,32)=##class(%ZDFM.page).#Language
+      k ^oddDEF(ClassName,"m",AOldName,30)
+      s CountLine=0
+      for { 
+        q:%request.Content.AtEnd  
+        s frag=%request.Content.Read(16000)	
+        s frag=$SYSTEM.Encryption.Base64Decode(frag)
+	    for IndLine=1:1:$l(frag,$c(13,10)){
+          s line=$p(frag,$c(13,10),IndLine)
+          s CountLine=CountLine+1
+          s ^oddDEF(ClassName,"m",AOldName,30,CountLine)=line
+        }
+	  }
+	  s ^oddDEF(ClassName,"m",AOldName,30)=CountLine
+	  s ^oddDEF(ClassName,"m",AOldName,51)=1  ; WebMethod 
+      d tt.%Save()
+   }	
+   q ""
 ]]></Implementation>
 </Method>
 
@@ -1694,7 +1820,6 @@ d ##class(%ZDFM.page).Test()</Description>
 d ##class(%ZDFM.SourceControll).InstallSorceControllAllNameSpace()</Description>
 <ProcedureBlock>1</ProcedureBlock>
 <Super>%Studio.SourceControl.Base</Super>
-<TimeChanged>64979,77996.466729</TimeChanged>
 <TimeCreated>64965,32556.304474</TimeCreated>
 
 <Parameter name="RExportPath">
@@ -1806,7 +1931,7 @@ d ##class(%ZDFM.SourceControll).InstallSorceControllAllNameSpace()</Description>
             s UserNameEncode=$System.Encryption.Base64Encode(..LoginUserName)
             s UserPassEncode=$System.Encryption.Base64Encode(..LoginUserPass)
 		    s pathPlayer=^%SYS("bindir")_"CacheWebBuilder.exe "
-	        ; s pathPlayer="C:\DelphiProject\SimpleDesigner\CacheWebBuilder.exe"
+	       ; s pathPlayer="C:\DelphiProject\SimpleDesigner\CacheWebBuilder.exe"
             s Param=""
             d ##class(%ZDFM.page).AutoAddSupperClass($zu(5),ClassName)
 	        s Action = 3
@@ -1877,7 +2002,6 @@ d ##class(%ZDFM.SourceControll).InstallSorceControllAllNameSpace()</Description>
 
 <Class name="%ZDFM.XML.element">
 <Super>%RegisteredObject,%XML.Adaptor</Super>
-<TimeChanged>64970,55374.860237</TimeChanged>
 <TimeCreated>64970,53886.207035</TimeCreated>
 
 <Property name="Proper">

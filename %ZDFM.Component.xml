@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2017.2 (Build 651)" ts="2018-11-27 22:06:41">
+<Export generator="Cache" version="25">
 <Class name="%ZDFM.Component.BootStrapCss">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,59564.514818</TimeChanged>
 <TimeCreated>64971,58938.766538</TimeCreated>
 
 <Method name="PreDraw">
@@ -36,7 +35,6 @@
 
 <Class name="%ZDFM.Component.BootStrapJs">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,59556.89938</TimeChanged>
 <TimeCreated>64971,59327.283698</TimeCreated>
 
 <Method name="PreDraw">
@@ -70,7 +68,6 @@
 <Description>
 http://jsfiddle.net/w33z4bo0/1/</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,82469.61455</TimeChanged>
 <TimeCreated>64974,82469.61455</TimeCreated>
 
 <Method name="PreDraw">
@@ -181,7 +178,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLAudio">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77158.501936</TimeChanged>
 <TimeCreated>64969,77626.144822</TimeCreated>
 
 <Method name="PreDraw">
@@ -214,7 +210,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLButton">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,76378.667088</TimeChanged>
 <TimeCreated>64968,75649.396347</TimeCreated>
 
 <Method name="PreDraw">
@@ -260,7 +255,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLCalendar">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77186.895028</TimeChanged>
 <TimeCreated>64974,39194.422712</TimeCreated>
 
 <Method name="PreDraw">
@@ -307,7 +301,6 @@ notepad.addEventListener("click",function(event){
 <Description>
 OK</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77212.174303</TimeChanged>
 <TimeCreated>64967,75067.907109</TimeCreated>
 
 <Method name="PreDraw">
@@ -353,7 +346,6 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLComboBox">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,74304.641276</TimeChanged>
 <TimeCreated>64969,46555.789501</TimeCreated>
 
 <Method name="PreDraw">
@@ -404,7 +396,6 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLComponent">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77239.575658</TimeChanged>
 <TimeCreated>64970,76798.0733</TimeCreated>
 
 <Method name="PreDraw">
@@ -439,7 +430,6 @@ OK</Description>
 <Description>
 http://jsfiddle.net/w33z4bo0/1/</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,82929.776188</TimeChanged>
 <TimeCreated>64974,82516.78699</TimeCreated>
 
 <Method name="PreDraw">
@@ -549,7 +539,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLCss">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77257.569793</TimeChanged>
 <TimeCreated>64969,70595.740274</TimeCreated>
 
 <Method name="DrawDeb">
@@ -593,7 +582,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLDataList">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,78093.479218</TimeChanged>
 <TimeCreated>64969,71036.752427</TimeCreated>
 
 <Method name="PreDraw">
@@ -626,7 +614,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLDiv">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77282.239921</TimeChanged>
 <TimeCreated>64970,69281.086915</TimeCreated>
 
 <Method name="PreDraw">
@@ -680,7 +667,6 @@ notepad.addEventListener("click",function(event){
 <Description>
 ----OK----</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77300.617651</TimeChanged>
 <TimeCreated>64968,67425.493907</TimeCreated>
 
 <Method name="PreDraw">
@@ -728,7 +714,6 @@ notepad.addEventListener("click",function(event){
 
 <Class name="%ZDFM.Component.HTMLFlash">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77318.994729</TimeChanged>
 <TimeCreated>64969,78322.014836</TimeCreated>
 
 <Method name="PreDraw">
@@ -778,7 +763,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLForm">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77339.752527</TimeChanged>
 <TimeCreated>64969,62127.784591</TimeCreated>
 
 <Method name="PreDraw">
@@ -827,7 +811,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLH">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77360.041953</TimeChanged>
 <TimeCreated>64969,67005.366219</TimeCreated>
 
 <Method name="PreDraw">
@@ -860,7 +843,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLIframe">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77372.526547</TimeChanged>
 <TimeCreated>64969,67285.390312</TimeCreated>
 
 <Method name="PreDraw">
@@ -903,7 +885,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLImage">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77384.579037</TimeChanged>
 <TimeCreated>64971,56741.63588</TimeCreated>
 
 <Method name="PreDraw">
@@ -951,7 +932,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLJavaScript">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77402.396792</TimeChanged>
 <TimeCreated>64969,70321.637896</TimeCreated>
 
 <Method name="PreDraw">
@@ -983,7 +963,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 
 <Class name="%ZDFM.Component.HTMLJQueryLib">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,37563.700586</TimeChanged>
 <TimeCreated>64972,32394.045921</TimeCreated>
 
 <Parameter name="isNotEvent">
@@ -1021,7 +1000,6 @@ style="position:absolute; border: 1px solid blue; overflow:hidden;  left:[Left];
 <Description>
 OK</Description>
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77438.538133</TimeChanged>
 <TimeCreated>64968,28298.939709</TimeCreated>
 
 <Method name="PreDraw">
@@ -1068,7 +1046,6 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLLink">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,77740.618447</TimeChanged>
 <TimeCreated>64969,70732.127066</TimeCreated>
 
 <Method name="PreDraw">
@@ -1100,7 +1077,6 @@ OK</Description>
 
 <Class name="%ZDFM.Component.HTMLListBox">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77003.673583</TimeChanged>
 <TimeCreated>64969,59201.208738</TimeCreated>
 
 <Method name="PreDraw">
@@ -1160,7 +1136,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLMemo">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,79233.234892</TimeChanged>
 <TimeCreated>64971,85873.165044</TimeCreated>
 
 <Method name="PreDraw">
@@ -1211,7 +1186,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLProgressBar">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77465.289753</TimeChanged>
 <TimeCreated>64971,82719.481685</TimeCreated>
 
 <Method name="PreDraw">
@@ -1254,7 +1228,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLRootCanvas">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,43044.994196</TimeChanged>
 <TimeCreated>64970,78942.610107</TimeCreated>
 
 <Parameter name="isNotEvent">
@@ -1291,7 +1264,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLRootCanvasPanel">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,43058.916358</TimeChanged>
 <TimeCreated>64970,78977.583487</TimeCreated>
 
 <Method name="PreDraw">
@@ -1324,7 +1296,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLSource">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,77382.353738</TimeChanged>
 <TimeCreated>64969,73130.037939</TimeCreated>
 
 <Method name="PreDraw">
@@ -1356,7 +1327,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLStringGrid">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77501.622737</TimeChanged>
 <TimeCreated>64972,31266.83173</TimeCreated>
 
 <Method name="PreDraw">
@@ -1403,7 +1373,6 @@ select id , String(UserName,'  ',Routine ) from %SYS.ProcessQuery where 1=1 and 
 
 <Class name="%ZDFM.Component.HTMLTable">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,56367.993522</TimeChanged>
 <TimeCreated>64972,27845.330615</TimeCreated>
 
 <Method name="PreDraw">
@@ -1487,7 +1456,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLTd">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64979,77526.490201</TimeChanged>
 <TimeCreated>64972,27764.175282</TimeCreated>
 
 <Method name="PreDraw">
@@ -1538,7 +1506,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLTh">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,29636.475823</TimeChanged>
 <TimeCreated>64972,29636.475823</TimeCreated>
 
 <Method name="PreDraw">
@@ -1589,7 +1556,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLTimer">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64976,28104.389821</TimeChanged>
 <TimeCreated>64971,60658.966879</TimeCreated>
 
 <Method name="PreDraw">
@@ -1639,7 +1605,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLTr">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64972,30116.893392</TimeChanged>
 <TimeCreated>64972,27696.388495</TimeCreated>
 
 <Method name="PreDraw">
@@ -1691,7 +1656,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLTrackBar">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64971,85226.898394</TimeChanged>
 <TimeCreated>64971,85058.92729</TimeCreated>
 
 <Method name="PreDraw">
@@ -1737,7 +1701,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.HTMLVideo">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,77069.533431</TimeChanged>
 <TimeCreated>64969,73343.260734</TimeCreated>
 
 <Method name="PreDraw">
@@ -1770,7 +1733,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.TModalForm">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64970,72160.578853</TimeChanged>
 <TimeCreated>64968,42209.439754</TimeCreated>
 
 <Method name="PreDraw">
@@ -1803,7 +1765,6 @@ select * from %SYS.ProcessQuery </Description>
 
 <Class name="%ZDFM.Component.TRootForm">
 <Super>%RegisteredObject</Super>
-<TimeChanged>64974,43081.656178</TimeChanged>
 <TimeCreated>64971,52245.791657</TimeCreated>
 
 <Method name="PreDraw">

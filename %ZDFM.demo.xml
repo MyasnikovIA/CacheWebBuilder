@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-32) 2017.2 (Build 651)" ts="2018-11-27 23:54:46">
+<Export generator="Cache" version="25">
 <Class name="%ZDFM.demo.demo1">
 <Description>
 </Description>
 <Super>%ZDFM.page</Super>
-<TimeChanged>64975,73904.413237</TimeChanged>
 <TimeCreated>64964,48759.504005</TimeCreated>
 
 <Method name="HTMLButton1Click">
@@ -18,6 +17,7 @@
    //  &js< ShowDialog("#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("%ZDFM.demo.demo2","O","URL"))#.cls",function(val){ test(val)}); >
       &js< ShowDialog("#($SYSTEM.CSP.GetDefaultApp($ZU(5)))#/#($zcvt("%ZDFM.demo.demo2","O","URL"))#.cls",'%ZDFM.demo.demo1.test'); >
       q ""
+
 ]]></Implementation>
 </Method>
 
@@ -128,7 +128,6 @@ end
 <Description>
 </Description>
 <Super>%ZDFM.page</Super>
-<TimeChanged>64979,79527.690398</TimeChanged>
 <TimeCreated>64964,56897.606863</TimeCreated>
 
 <Method name="HTMLButton1Click">
@@ -279,7 +278,6 @@ end
 <Description>
 </Description>
 <Super>%ZDFM.page</Super>
-<TimeChanged>64979,85920.719316</TimeChanged>
 <TimeCreated>64965,33600.598556</TimeCreated>
 
 <Method name="HTMLButton1Click">
@@ -313,6 +311,7 @@ end
 <Implementation><![CDATA[
      w " alert(HTMLListBox1.getSelectList());	 "
      q
+
 ]]></Implementation>
 </Method>
 
