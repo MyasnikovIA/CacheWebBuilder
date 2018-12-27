@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2018.1 (Build 184)" ts="2018-12-27 16:49:48">
+<Class name="%ZDFM.Studio">
+<Super>%CSP.Page</Super>
+<TimeChanged>65009,59709.01662</TimeChanged>
+<TimeCreated>64994,46531.413803</TimeCreated>
+
+<Parameter name="CodePage">
+<Description><![CDATA[
+<br>   s %response.CharSet="CP1251" 
+<br>   "CP1251" или "UTF-8"
+Parameter CodePage = "CP1251";]]></Description>
+<Default>UTF-8</Default>
+</Parameter>
+
+<Parameter name="Language">
+<Description>
+w ##class(%ZDFM.page).#Language </Description>
+<Expression><![CDATA[$case($e($$GetVersion^%apiOBJ(),$l("Cache Objects Version ")+1,$l("Cache Objects Version ")+4)>2017, 1:"objectscript",:"cache")]]></Expression>
+</Parameter>
+
+<Method name="OnPage">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	if %request.Get("Login","")'=""{
+	   w 1   
+	   q 1	
+    }     
+ 
+    if %request.Get("GetNameSpace","")'=""{
+	   d ..GetNameSpace()
+	   q 1
+    }
+    if %request.Get("GetProjectList","")'=""{
+	   d ..GetProjectList()
+	   q 1
+    }
+    if %request.Get("GetProjectOne","")'=""{
+	   d ..GetProjectOne()
+	   q 1
+    }
+  
+    if $d(%request.Data("LoadProject",1)) {
+	   s NameSpace=%request.Get("NameSpace",$zu(5))  
+	   s ProjectName=%request.Get("ProjectName","")  
+       d ..LoadProject(NameSpace,ProjectName)
+       Quit $$$OK
+    }
+   
+   
+    
+    if $d(%request.Data("LoadTree",1)) {
+       d ..LoadTree()
+       Quit $$$OK
+    }
+    if $d(%request.Data("GetContent",1)) {
+       d ..GetConten()
+       Quit $$$OK
+    }
+    if $d(%request.Data("SaveContent",1)) {
+       d ..SaveContent()
+       Quit $$$OK
+    }
+    
+    if $d(%request.Data("CompileContent",1)) {
+       d ..CompileContent()
+       Quit $$$OK
+    }
+
+    if $d(%request.Data("RunFragCode",1)) {
+       d ..RunFragCode()
+       Quit $$$OK
+    }
+     
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="LoadProject">
+<Description>
+Заполняем дерево проекта</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>SelectNameSpace=$zu(5),SelectProject=""</FormalSpec>
+<Implementation><![CDATA[
+   if SelectNameSpace="" q 
+   if SelectProject="" q 
+    s overrideTmp=""
+    if $isobject(%request.Content){
+	   s overrideTmp=overrideTmp_$zcvt(%request.Content.Read(32000),"I","URL")	      
+	}	
+	; k ^%deb
+	; s ^%deb=overrideTmp
+	d $ZU(5,SelectNameSpace)
+	do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(overrideTmp,,.override,1)
+	s listObj=##class(%ListOfObjects).%New()
+    
+    if override = ""{
+	   s override1=##class(%ZEN.proxyObject).%New() 
+       s override1.text="Class", override1.block="ClassList"
+       s override1.namespace=SelectNameSpace, override1.id=$random(9999999)_$h
+       s override1.icon=13 ; "Developper.Studio.image.class.cls"
+       s override1.projectname=SelectProject
+       d listObj.Insert(override1)
+       
+       s override1=##class(%ZEN.proxyObject).%New() 
+       s override1.text="Routine", override1.block="RoutineList"
+       s override1.namespace=SelectNameSpace, override1.id=$random(9999999)_$h
+       s override1.projectname=SelectProject
+       s override1.icon=9 ; "Developper.Studio.image.routine.cls"
+       d listObj.Insert(override1)
+      
+       s override1=##class(%ZEN.proxyObject).%New() 
+       s override1.text="CSP",override1.block="CSPList"
+       s override1.namespace=SelectNameSpace,override1.id=$random(9999999)_$h
+       s override1.projectname=SelectProject
+       s override1.icon=10 ; "Developper.Studio.image.csp.cls"
+       d listObj.Insert(override1)
+       w "{""Content"":"
+       do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+       w "}"
+       q
+    }
+   s oldNS=$ZU(5)
+   s:override.namespace="" override.namespace=$ZU(5)
+   d $zu(5,override.namespace)
+   s SelectNameSpace=override.namespace
+   s override.order=1
+   if override.block="ClassList"{
+      s className=""
+      for {
+         s className=$o(^oddPROJECT(SelectProject,"Items",className))
+         q:className=""
+         s typ=$o(^oddPROJECT(SelectProject,"Items",className,""))
+         if typ="CLS" {
+	        s override1=##class(%ZEN.proxyObject).%New() 
+            s override1.text=className_".cls"
+            s override1.block="Class"
+            s override1.projectname=SelectProject
+            s override1.namespace=SelectNameSpace,override.id=$random(9999999)_$h
+            s override1.cacheclass=className
+            s override1.icon=13 ; "Developper.Studio.image.class.cls"
+            s override1.window=override.block_":"_$zcvt(override.namespace,"L")_":"_className
+            // s override1.urledit=..#URLEditClass
+            d listObj.Insert(override1)
+         }
+      }
+      w "{""Content"":"
+      do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+      w "}"
+      d $ZU(5,oldNS)  q
+   }
+   /*
+   if override.block="Class"{
+      d ..drawClassComponent(override)
+      d $ZU(5,oldNS)  q
+   }
+    if override.block="ClassParametrList"{
+         s icon=4 ; "Developper.Studio.image.parameter.cls"
+         d ..drawClassComponentList(override,"p",icon,"ClassParametr")
+         d $ZU(5,oldNS)  q
+    }
+    
+    
+    
+    if override.block="ClassPropertyList"{
+         s icon=2 ; "Developper.Studio.image.parameter.cls"
+         d ..drawClassComponentList(override,"a",icon,"ClassProperty")
+         d $ZU(5,oldNS)  q
+    }
+    if override.block="ClassXDataList"{
+         s icon=18 ; "Developper.Studio.image.parameter.cls"
+         d ..drawClassComponentList(override,"x",icon,"ClassXData")
+         d $ZU(5,oldNS)  q
+    }
+    if override.block="ClassQueryList"{
+         s icon=5 ; "Developper.Studio.image.parameter.cls"
+         d ..drawClassComponentList(override,"q",icon,"ClassXData")
+         d $ZU(5,oldNS)  q
+    }
+    if override.block="ClassMethodList"{
+         s icon=3 ; "Developper.Studio.image.parameter.cls"
+         d ..drawClassComponentList(override,"m",icon,"ClassMethod")
+         d $ZU(5,oldNS)  q
+    }
+    */
+    if override.block="RoutineList"{
+      s listObj=##class(%ListOfObjects).%New()
+      s className=""
+      for {
+         s className=$o(^oddPROJECT(SelectProject,"Items",className))
+         q:className=""
+         s typ=$o(^oddPROJECT(SelectProject,"Items",className,""))
+         if typ="MAC" {
+            s ^%deb(3)="ClassParametrList"
+	          
+	        s override1=##class(%ZEN.proxyObject).%New()  
+            s override1.block="Routine"
+            s override1.projectname=SelectProject
+            s exe=$ZCVT($p(className,".",$l(className,".")),"U")
+            if exe=$zcvt($p(className,".",$l(className,".")),"U"){
+               s exe=$zcvt($p(className,".",$l(className,".")),"L")
+               s shotName=$p(className,".",$l(className,".")-1) _"."_exe    
+            }else{
+               s shotName=$p(className,".",$l(className,".")-1) _"."_exe   
+            } 
+            s override1.routine=shotName
+            s override1.text=shotName
+            s override1.namespace=SelectNameSpace,override1.id=$random(9999999)_$h
+            s override1.icon=14 ; "Developper.Studio.image.routine.cls"
+            s override1.window=override1.block_":"_$zcvt(override.namespace,"L")_":"_shotName
+            ; s override1.urledit=..#URLEditRoutine
+            d listObj.Insert(override1)
+         }
+      }
+      w "{""Content"":"
+      do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+      w "}"
+      d $ZU(5,oldNS)  q
+   }
+   if override.block="CSPList"{
+      s listObj=##class(%ListOfObjects).%New()
+      s className=""
+      for {
+         s className=$o(^oddPROJECT(SelectProject,"Items",className))
+         q:className=""
+         s typ=$o(^oddPROJECT(SelectProject,"Items",className,""))
+         if typ="CSP" {
+	             s name=className
+	             s Rash=$zcvt($p(name,".",$l(name,".")),"L")
+                 s icon=19
+                 if Rash="csp"  s icon=16 
+                 if Rash="csr"  s icon=16 
+                 if Rash="html" s icon=20 
+                 if Rash="htm"  s icon=20 
+                 if Rash="js"   s icon=21 
+                 if Rash="css"  s icon=22 
+                 if Rash="bmp"  s icon=24 
+                 if Rash="jpg"  s icon=24 
+                 if Rash="jpeg" s icon=24 
+                 if Rash="png"  s icon=24 
+                 if Rash="gif"  s icon=24 
+                 if Rash="ico"  s icon=24 
+                 if Rash="xml"  s icon=23 
+                 if Rash="rar"  s icon=25 
+                 if Rash="zip"  s icon=25 
+                 if Rash="7z"   s icon=25 
+                 s File=""
+                 s app="" 
+                 for { 
+                    s app=$o(^%appList(app))
+                    q:app=""
+                    continue:$l(app)>$l(name)
+                    set subApp=$e(name,1,$l(app))
+                    if subApp=app{
+	                   s ShortName=$e(name,$l(app),$l(name))
+	                   s File=^%appList(app)
+	                   s File=$e(File,1,$l(File)-1)_ShortName
+	                   s File=$tr(File,"/","\")
+                    }
+                 } 
+                 s exe=$ZCVT($p(className,".",$l(className,".")),"U")
+                 if exe=$zcvt($p(className,".",$l(className,".")),"U"){
+                    s exe=$zcvt($p(className,".",$l(className,".")),"L")
+                    s shotName=$p(className,".",$l(className,".")-1) _"."_exe    
+                 }else{
+                    s shotName=$p(className,".",$l(className,".")-1) _"."_exe   
+                 } 
+  	            s override1=##class(%ZEN.proxyObject).%New()  
+                s override1.text=shotName
+                s override1.block="CspFile"
+                s override1.projectname=SelectProject
+                s override1.namespace=SelectNameSpace,override1.id=$random(9999999)_$h
+                s override1.icon=icon
+                s override1.file=File
+                s override1.application=$System.CSP.GetDefaultApp($zu(5))
+                s override1.url=$lg($system.CSP.FilenameToUrls(File))
+                s override1.id=override1.block_":"_override.namespace_":"_override1.application_":"_$random(9999999)
+                s id=override1.block_":"_override.namespace_":"_override1.application_":"_File
+                s override1.window=$zcvt(SelectNameSpace,"u")_":"_shotName
+                set Port=57772
+                if $d(^%SYS("WebServer","Port")){   s Port=^%SYS("WebServer","Port")  }
+                s URLExplorer=$e(override1.file,$l(override1.startdir)+1,$l(override1.file))
+                s override1.URLExplorer="http://"_$zu(110)_":"_Port_override1.application_"/"_URLExplorer
+                d listObj.Insert(override1)
+            }
+         }
+      w "{""Content"":"
+      do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+      w "}"
+      d $ZU(5,oldNS)  q
+   }
+   d $ZU(5,oldNS)
+   
+   q
+]]></Implementation>
+</Method>
+
+<Method name="drawClassComponentList">
+<Description>
+ создать список параметров</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override,Blc="m",icon=0,BlockTxt=""</FormalSpec>
+<Implementation><![CDATA[
+     s NameSpace=override.namespace
+     s classname=override.cacheclass
+     if $d(^oddDEF(classname)),$d(^oddDEF(classname,Blc)){
+        s listObj=##class(%ListOfObjects).%New()
+        s ParamName=""
+        for {
+           s ParamName=$o(^oddDEF(classname,Blc,ParamName),1)
+           q:ParamName=""
+           ; s txt=BlocName_":"_NameSpace_":"_classname_":"_ParamName
+           s override1=##class(%ZEN.proxyObject).%New()  
+           s override1.text=ParamName
+           s override1.objectname=ParamName
+           s override1.block=BlockTxt
+           s override1.icon=icon
+           s override1.namespace=override.namespace
+           s override1.cacheclass=override.cacheclass
+           s override1.id=override1.block_":"_$zcvt(override.namespace,"L")_":"_override.cacheclass_":"_ParamName
+           s override1.window=override1.id
+           ; s override1.urledit=..#URLEditClassParameter
+           d listObj.Insert(override1) 
+        }
+         w "{""Content"":"
+         do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+         w "}"
+    }
+]]></Implementation>
+</Method>
+
+<Method name="drawClassComponent">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+         s listObj=##class(%ListOfObjects).%New()
+         s override1=##class(%ZEN.proxyObject).%New()     
+         s override1.block="ClassParametrList"
+         s override1.text="Parameter"
+         s override1.id=override1.block_":"_override.namespace_":"_override.cacheclass
+         s override1.icon=4 ; "Developper.Studio.image.parameter.cls"
+         s override1.namespace=override.namespace
+         s override1.cacheclass=override.cacheclass
+         d listObj.Insert(override1)
+
+         s override1=##class(%ZEN.proxyObject).%New()     
+         s override1.block="ClassPropertyList"
+         s override1.text="Property"
+         s override1.id=override1.block_":"_override.namespace_":"_override.cacheclass
+         s override1.icon=2 ; "Developper.Studio.image.propertie.cls"
+         s override1.namespace=override.namespace
+         s override1.cacheclass=override.cacheclass
+         d listObj.Insert(override1)
+         
+         s override1=##class(%ZEN.proxyObject).%New()     
+         s override1.block="ClassMethodList"
+         s override1.text="Method"
+         s override1.id=override1.block_":"_override.namespace_":"_override.cacheclass
+         s override1.icon=3 ; "Developper.Studio.image.method.cls"
+         s override1.namespace=override.namespace
+         s override1.cacheclass=override.cacheclass
+         d listObj.Insert(override1)
+         
+         s override1=##class(%ZEN.proxyObject).%New()     
+         s override1.block="ClassQueryList"
+         s override1.text="Query"
+         s override1.id=override1.block_":"_override.namespace_":"_override.cacheclass
+         s override1.icon=5 ; "Developper.Studio.image.query.cls"
+         s override1.namespace=override.namespace
+         s override1.cacheclass=override.cacheclass
+         d listObj.Insert(override1)
+         
+         s override1=##class(%ZEN.proxyObject).%New()     
+         s override1.block="ClassXDataList"
+         s override1.text="XData"
+         s override1.id=override1.block_":"_override.namespace_":"_override.cacheclass
+         s override1.icon=18 ; "Developper.Studio.image.xdata.cls"
+         s override1.namespace=override.namespace
+         s override1.cacheclass=override.cacheclass
+         d listObj.Insert(override1)
+         w "{""Content"":"
+         do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+         w "}"
+]]></Implementation>
+</Method>
+
+<Method name="GetProjectOne">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s NameSpace=""
+    s ProjectName=""
+    if $isobject(%request.Content){
+	   s tmp=%request.Content.Read(32000)	      
+		s NameSpace=$p(tmp,$c(13,10),1)
+		s ProjectName=$p(tmp,$c(13,10),1)
+	}	
+    if NameSpace=""     q ""
+    if ProjectName=""   q ""
+	s OldNS=$zu(5)
+	d $zu(5,NameSpace)
+    
+    d $zu(5,OldNS)
+	q ""
+]]></Implementation>
+</Method>
+
+<Method name="GetProjectList">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s NameSpace=""
+    if $isobject(%request.Content){
+		s NameSpace=$zcvt(%request.Content.Read(32000),"I","URL")	      
+	}	
+	if NameSpace="" q ""
+	s OldNS=$zu(5)
+	d $zu(5,NameSpace)
+	s SelectProject="",Count=0
+	for {
+       s SelectProject=$o(^oddPROJECT(SelectProject))
+       q:SelectProject=""
+       s Count=Count+1
+       w:Count'=1 !
+       w SelectProject
+	}
+    d $zu(5,OldNS)
+	q ""
+]]></Implementation>
+</Method>
+
+<Method name="GetNameSpace">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    k namespace
+    For i=1:1:$ZU(90,0){ 
+        if $l($ZU(90,2,0,i))>0 s namespace($ZCVT($ZU(90,2,0,i),"L"))=1
+    }
+    w $ZU(5)
+    s ind="",CountLine=0
+    for {
+       s ind=$o(namespace(ind))
+       q:ind=""
+       if ind="%cachelib" continue
+       if $l(ind,"@")>1 continue
+       s CountLine=CountLine+1
+       ; w:CountLine'=1 !
+       ; w ind
+       w !,ind
+    }
+]]></Implementation>
+</Method>
+
+<Method name="LoadTree">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    s overrideTmp=""
+    if $isobject(%request.Content){
+	   s overrideTmp=overrideTmp_$zcvt(%request.Content.Read(32000),"I","URL")	      
+	}	
+	do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(overrideTmp,,.override,1)
+    
+    if override = ""{
+       d ..drawNameSpace()
+       q
+    }
+    if '$IsObject(override)   s override=##class(%ZEN.proxyObject).%New()
+    s:override.namespace="" override.namespace=$ZU(5)
+    s oldNS=$zu(5)
+    d $zu(5,override.namespace)
+    if override.block="NameSpace" {
+        d ..drawBlockNameSpace(override,0)
+        d $zu(5,oldNS)  q
+    }
+    if override.block="ClassList" {
+        d ..drawClassList(override)
+        d $zu(5,oldNS)  q
+    }
+    if override.block="RoutineList" {
+       d ..drawRoutineList(override)
+       d $zu(5,oldNS)  q ""
+    }
+    if override.block="CspAppList" {
+        d ..drawCSPApplicatio(override)
+        d $zu(5,oldNS)  q ""
+    }
+    if override.block="CspList" {
+         d ..drawCSPList(override)
+         d $zu(5,oldNS) q ""
+    }    
+    q
+]]></Implementation>
+</Method>
+
+<Method name="drawCSPList">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override</FormalSpec>
+<Implementation><![CDATA[
+   s appUrl=override.application
+   s Dir=override.file
+   s NameSpace=override.namespace
+   s StartDir=$$GetFilename^%apiCSP(appUrl_"/")
+   s StartPath=$e(StartDir,1,$l(StartDir)-$l(appUrl))
+   s:Dir="" Dir=##class(%File).NormalizeDirectory($$GetFilename^%apiCSP(appUrl_"/"))
+   s Dir=$tr(Dir,"$",":")
+   s filter=""
+   s rs = ##class(%Library.ResultSet).%New("%Library.File:FileSet")
+   s sc = rs.Execute(Dir,filter,"Name")
+   s listObj=##class(%ListOfObjects).%New()
+        
+   while rs.Next()
+   {
+     s name = rs.Get("Name")
+     s dir=$tr(name,":","$")
+     if (rs.Get("Type") = "D")
+     {
+        // d ..GetDir(gl,name)
+        s OneDir=$e(name,$l(StartDir),$l(name))
+        s override1= ##class(%ZEN.proxyObject).%New()
+        s override1.block="CspList"
+        s override1.file=dir
+        s override1.id="CspList:"_NameSpace_":"_dir_":"_appUrl
+        s override1.text=$p(name,"\",$l(name,"\"))
+        s override1.onedir=OneDir
+        s override1.startdir=StartDir
+        s override1.icon=17
+        s override1.window=""
+        s override1.urledit=""
+        s override1.application=appUrl
+        s override1.namespace=override.namespace
+        s override1.isDir=1
+        k override1.%data("url")
+        k override1.%data("rashirenie")
+         d listObj.Insert(override1)     
+        ; d ..addRec("CspList:"_NameSpace_":"_dir_":"_appUrl ,$p(name,"\",$l(name,"\")))
+     }else{
+        
+        s Rash=$zcvt($p(name,".",$l(name,".")),"L")
+                 s icon=19
+                 if Rash="csp"  s icon=16 
+                 if Rash="csr"  s icon=16 
+                 if Rash="html" s icon=20 
+                 if Rash="htm"  s icon=20 
+                 if Rash="js"   s icon=21 
+                 if Rash="css"  s icon=22 
+                 if Rash="bmp"  s icon=24 
+                 if Rash="jpg"  s icon=24 
+                 if Rash="jpeg" s icon=24 
+                 if Rash="png"  s icon=24 
+                 if Rash="gif"  s icon=24 
+                 
+                 if Rash="ico"  s icon=24 
+                 if Rash="xml"  s icon=23 
+                 if Rash="rar"  s icon=25 
+                 if Rash="zip"  s icon=25 
+                 if Rash="7z"   s icon=25 
+        
+        s override1= ##class(%ZEN.proxyObject).%New()
+        s override1.block="CspFile"
+        s override1.file=name
+        s override1.rashirenie=Rash
+        s override1.id="CspFile:"_NameSpace_":"_dir_":"_appUrl
+        s override1.text=$p(name,"\",$l(name,"\"))
+        s override1.startdir=StartDir
+        s override1.namespace=override.namespace
+        s override1.icon=icon
+        s override1.application=appUrl
+        s override1.url=$lg($system.CSP.FilenameToUrls(name))
+        
+        
+        ; s override1.window="CspFile:"_$zcvt(NameSpace,"L")_":"_override.text_":"_$system.Encryption.Base64Encode(name)
+        s override1.window=$zcvt(NameSpace,"U")_":"_override1.url
+        s override1.isDir=0
+        
+        set Port=57772
+        if $d(^%SYS("WebServer","Port")){   s Port=^%SYS("WebServer","Port")  }
+        s URLExplorer=$e(override1.file,$l(override1.startdir)+1,$l(override1.file))
+        s override1.URLExplorer="http://"_$zu(110)_":"_Port_override1.application_"/"_URLExplorer
+        ; "startdir":"c:\\intersystems\\cache\\csp\\user\\"
+        ; "file":"C:\\InterSystems\\Cache\\CSP\\user\\menu.csp"
+        ; s override1.urledit=..#URLEditCSPFile
+        d listObj.Insert(override1) 
+     }
+  }
+   
+  w "{""Content"":"
+  do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+  w "}" 
+  q
+]]></Implementation>
+</Method>
+
+<Method name="drawCSPApplicatio">
+<Description>
+добавить список классов
+d ##class(HTML.jquery.plagin.TreeView.demo.demo7).drawCSPApplicatio()</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override</FormalSpec>
+<Implementation><![CDATA[
+     s oldNSTmp=$zu(5)
+     d $zu(5,"%SYS")
+     s SQLobj=##class(%SQL.Statement).%New()
+     s SqlStr="Select Name,NameSpace,Type,Path,NameLowerCase  from  Security.Applications where NameSpace='"_override.namespace_"'  "
+     d SQLobj.%Prepare(SqlStr)
+     s DataSet=SQLobj.%Execute()
+     s listObj=##class(%ListOfObjects).%New()
+     while DataSet.%Next()
+     {
+         if $l(DataSet.NameLowerCase)>0,$l(DataSet.Path)=0 continue
+         s override1= ##class(%ZEN.proxyObject).%New()
+         s override1.application=DataSet.Name
+         s override1.block="CspList"
+         s override1.text=DataSet.Name
+         s override1.id="CspList:"_override.namespace_"::"_DataSet.Name_":"
+         s override1.namespace=override.namespace
+         s override1.icon=17
+         d listObj.Insert(override1) 
+     }
+     d $zu(5,oldNSTmp)
+     w "{""Content"":"
+     do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+     w "}"
+     q
+]]></Implementation>
+</Method>
+
+<Method name="drawRoutineList">
+<Description>
+добавить список классов</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override</FormalSpec>
+<ProcedureBlock>1</ProcedureBlock>
+<Implementation><![CDATA[
+  s glList=$lb()
+  s $li(glList,1)=$lb("^rMAC"   ,"mac",14)
+  s $li(glList,2)=$lb("^rINC"   ,"inc",15)
+  ; s $li(glList,3)=$lb("^ROUTINE","int","Developper.Studio.image.int.cls")
+
+  s NameSpace= override.namespace
+  s SelectTreeName=override.routine
+  s listObj=##class(%ListOfObjects).%New()
+  for ind=1:1:$ll(glList){
+      k filtr
+      k sortPack,sort
+      s gl  = $lg( $lg(glList,ind) , 1 )
+      s exe = $lg( $lg(glList,ind) , 2 )
+      s icon= $lg( $lg(glList,ind) , 3 )
+      s classname=""
+      for {
+         s classname=$o(@gl@(classname))
+         q:classname=""
+         ; if $l(routine,"%")>1,$zcvt(routine,"U")'="%SYS" continue
+              
+         if SelectTreeName'=""{
+            if $l(classname)<$l(SelectTreeName) { continue  }
+            if $e(classname,1,$l(SelectTreeName))'=SelectTreeName { continue  }
+         }
+         if $l(classname,"%")>1,$zcvt(NameSpace,"U")'="%SYS" continue
+         s packDraw=$e(classname,$l(SelectTreeName),$l(classname))
+         if $e(packDraw,1,1)="."  s packDraw=$e(packDraw,2,$l(packDraw))
+         s pack=$p(packDraw,".",1)
+         if $d(filtr(pack)){ continue  }
+         s filtr(pack)=1
+         if SelectTreeName_pack'=classname{
+            s txt="RoutineList:"_NameSpace_":"_SelectTreeName_pack_"."
+            s sortPack(txt)=pack
+            s override1= ##class(%ZEN.proxyObject).%New()
+            s override1.block="RoutineList"
+            s override1.routine=SelectTreeName_pack_"."
+            s override1.text=pack
+            s override1.id=txt
+            s override1.icon=11
+            s override1.namespace=override.namespace
+            d listObj.Insert(override1)
+            // d ..addRec(txt,pack)   
+         }else{
+            s shotName=$p(classname,".",$l(classname,".")) 
+            s txt="Routine:"_$zcvt(NameSpace,"L")_":"_classname_"."_exe
+            s sort(txt)=$lb(shotName_"."_exe,icon)
+            // d ..addRec(txt ,shotName_"."_exe,icon)
+            s override1= ##class(%ZEN.proxyObject).%New()
+            s override1.block="Routine"
+            s override1.routine=classname_"."_exe
+            s override1.text=shotName_"."_exe
+            s override1.id=txt
+            s override1.icon=icon
+            s override1.window=txt
+            s override1.namespace=override.namespace
+            ; s override1.urledit=..#URLEditRoutine
+            d listObj.Insert(override1)
+         }
+      }
+   }
+  w "{""Content"":"
+  do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+  w "}"
+]]></Implementation>
+</Method>
+
+<Method name="drawClassList">
+<Description>
+добавить список классов</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override</FormalSpec>
+<Implementation><![CDATA[
+  k filtr
+  s classname=""
+  s SelectTreeName=override.cacheclass
+  s listObj=##class(%ListOfObjects).%New()
+  for {
+     s classname=$o(^oddDEF(classname))
+     q:classname=""
+     if $l(classname,"%")>1,$zcvt(override.namespace,"U")'="%SYS" continue
+     if SelectTreeName'=""{
+       if $l(classname)<$l(SelectTreeName) { continue  }
+       if $e(classname,1,$l(SelectTreeName))'=SelectTreeName { continue  }
+     }
+     s packDraw=$e(classname,$l(SelectTreeName),$l(classname))
+     if $e(packDraw,1,1)="."  s packDraw=$e(packDraw,2,$l(packDraw))
+     s pack=$p(packDraw,".",1)
+     if $d(filtr(pack)){ continue  }
+     s filtr(pack)=1
+     if SelectTreeName_pack'=classname{
+	   s override1= ##class(%ZEN.proxyObject).%New()
+       s override1.cacheclass=SelectTreeName_pack_"."
+       s override1.isdir=1
+       s override1.text=pack
+       s override1.block="ClassList"
+       s override1.id=override.block_":"_override.namespace_":"_SelectTreeName_pack_"."
+       s override1.icon=11
+       s override1.namespace=override.namespace
+       d listObj.Insert(override1)
+     }else{
+       s ShotName=$p(classname,".",$l(classname,".")) 
+       s override1= ##class(%ZEN.proxyObject).%New()
+       s override1.cacheclass=SelectTreeName_pack
+       s override1.block="Class"
+       s override1.isdir=0
+       s override1.text=ShotName
+       s override1.id=override.block_":"_override.namespace_":"_classname
+       s override1.icon=1
+       s override1.window=override.block_":"_$zcvt(override.namespace,"L")_":"_classname
+       s override1.namespace=override.namespace
+       // s override1.urledit=..#URLEditClass
+       d listObj.Insert(override1)
+     }
+  }
+  w "{""Content"":"
+  do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+  w "}"
+]]></Implementation>
+</Method>
+
+<Method name="drawBlockNameSpace">
+<Description>
+добавить список блоков в области имен (классы,рутины,глобалы,CSP)</Description>
+<ClassMethod>1</ClassMethod>
+<FormalSpec>override2,DrawGlobal=0</FormalSpec>
+<Implementation><![CDATA[
+   // s override.block="ClassList",override.text="Class" 
+       s listObj=##class(%ListOfObjects).%New()
+       s override=##class(%ZEN.proxyObject).%New()
+       s override.block="ClassList",override.text="Class",override.id="ClassList:"_override2.namespace
+       s override.namespace=override2.namespace
+       s override.icon=13
+       d listObj.Insert(override)
+       s override=##class(%ZEN.proxyObject).%New()
+       s override.block="RoutineList",override.text="Routine",override.id="RoutineList:"_override2.namespace 
+       s override.namespace=override2.namespace
+       s override.icon=9
+       d listObj.Insert(override)
+       s override=##class(%ZEN.proxyObject).%New()
+       s override.block="CspAppList",override.text="CSP" ,override.id="CspAppList:"_override2.namespace 
+       s override.namespace=override2.namespace
+       s override.icon=10
+       d listObj.Insert(override)
+       if DrawGlobal=1 {
+	     s override=##class(%ZEN.proxyObject).%New()
+         s override.block="GlobalList",override.text="Global" ,override.id="GlobalList:"_override2.namespace 
+         s override.icon=11
+         d listObj.Insert(override)
+       }
+       w "{""Content"":"
+         do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+       w "}"
+]]></Implementation>
+</Method>
+
+<Method name="drawNameSpace">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    k namespace
+    For i=1:1:$ZU(90,0){ 
+        if $l($ZU(90,2,0,i))>0 s namespace($ZCVT($ZU(90,2,0,i),"L"))=1
+    }
+    s listObj=##class(%ListOfObjects).%New()
+    s ind=""
+    for {
+       s ind=$o(namespace(ind))
+       q:ind=""
+       if ind="%cachelib" continue
+       s override=##class(%ZEN.proxyObject).%New()
+       s override.text=ind
+       s override.block="NameSpace"
+       s override.namespace=ind
+       s override.icon=12
+       d listObj.Insert(override)
+    }
+    w "{""Content"":"
+    do ##class(%ZEN.Auxiliary.jsonProvider).%ObjectToJSON(listObj,,,"aelotw")
+    w "}"
+]]></Implementation>
+</Method>
+
+<Method name="OnPreHTTP">
+<ClassMethod>1</ClassMethod>
+<ReturnType>%Library.Boolean</ReturnType>
+<Implementation><![CDATA[
+     if %request.Get("LoadImage","")'=""{
+         Do %response.SetHeader("Content-Type","image/bmp") 
+	     q 1  
+     }
+	 if $L(..#CodePage )>0 {
+  	   s %response.CharSet=..#CodePage  
+	 }
+     // Do %response.SetHeader("Content-Type","text/plain")   
+     Do %response.SetHeader("Content-Type","application/javascript")   
+     q 1
+]]></Implementation>
+</Method>
+
+<Method name="GetConten">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+    s overrideTmp=""
+    if $isobject(%request.Content){
+	   s overrideTmp=overrideTmp_$zcvt(%request.Content.Read(32000),"I","URL")	      
+	}	
+	do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(overrideTmp,,.override,1)
+    if override = ""  q
+    if '$IsObject(override)   s override=##class(%ZEN.proxyObject).%New()
+    s:override.namespace="" override.namespace=$ZU(5)
+    s oldNS=$zu(5)
+    d $zu(5,override.namespace)
+
+    s FormClass="{""ClassForm"":""TCodeFrame""}"
+    if $d(override.%data("file")){
+	    s pathFile=override.%data("file")
+	    w FormClass_$c(13,10)
+	    d ..ReadFile(pathFile,0)
+    }
+    if $d(override.%data("cacheclass")){
+        s pathFile="TMP\"_override.%data("cacheclass")_"("_$job_").cls"
+	    s ClassName=override.%data("cacheclass")
+        d $system.OBJ.ExportUDL(ClassName_".CLS",pathFile,"/diffexport",,"CP1251")
+	    w FormClass_$c(13,10)
+	    d ..ReadFile(pathFile,1)
+    }
+    if $d(override.%data("routine")){
+        ; w override.%data("routine")
+        s pathFile="TMP\("_$job_")"_override.%data("routine")_".txt"
+	    s RoutineName=override.%data("routine")
+	    d $system.OBJ.ExportUDL(RoutineName,pathFile,"/diffexport")
+	    w FormClass_$c(13,10)
+	    d ..ReadFile(pathFile,1,2)
+    }
+    // zw override
+    d $zu(5,oldNS)
+    q
+]]></Implementation>
+</Method>
+
+<Method name="ReadFile">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pathFile="",DeleteFile=1,startLine=0</FormalSpec>
+<Implementation><![CDATA[
+      // d $system.OBJ.ExportUDL(Name_".CLS",pathFile,"/diffexport",,"CP1251")
+      s file=##class(%FileCharacterStream).%New()
+      s file.Filename=pathFile
+      s count=0
+      for  {
+         q:file.AtEnd 
+         if startLine'=0 {
+           s html=file.ReadLine()
+           s count=count+1
+           continue:startLine>count
+           s html=$zcvt(html,"I","UTF8")
+           w:count>2 $c(13,10)
+           w html
+         }else{
+           s html=file.Read(32000)
+           s html=$zcvt(html,"I","UTF8")
+           w html
+         }
+	  }
+	  s file=""
+      d:DeleteFile=1 ##class(%File).%Delete(pathFile)
+      q
+]]></Implementation>
+</Method>
+
+<Method name="SaveContent">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	if '$isobject(%request.Content)  q
+	s json=%request.Get("json","")
+    do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(json,,.InfoObject,1)
+    if InfoObject="" q
+    s:InfoObject.namespace="" InfoObject.namespace=$ZU(5)
+    s oldNS=$zu(5)
+    d $zu(5,InfoObject.namespace)
+	; w !,"========================",!
+	if $d(InfoObject.%data("cacheclass")){
+
+	   d %SYSTEM.OBJ.LoadStream(%request.Content)
+
+     //  s ClassName=InfoObject.%data("cacheclass")
+     //  s FileName="TMP\"_ClassName_"(Save "_$job_").cls"
+     //  set file = ##class(%FileBinaryStream).%New()
+	 //  set file.Filename = FileName
+	 //  set status = file.CopyFromAndSave(%request.Content)
+	   
+	   // s file=""
+	   // d $system.OBJ.Load(FileName)
+	   // d ##class(%File).%Delete(FileName)
+	}
+	if $d(InfoObject.%data("routine")){
+       s ClassName=InfoObject.%data("routine")
+       s FileName="TMP\"_$job_ClassName
+       s FileName="C:\11111111111\"_$job_ClassName
+       set file = ##class(%FileBinaryStream).%New()
+	   set file.Filename = FileName
+	   d file.WriteLine("ROUTINE "_$e(ClassName,1,$l(ClassName)-4))
+	   if $isobject(%request.Content){
+	      for {
+		     q:%request.Content.AtEnd
+	         d file.WriteLine(%request.Content.ReadLine())	     
+	       }	
+	   }     
+	   ; set status = file.CopyFromAndSave(%request.Content)
+	   s file=""
+	   d $system.OBJ.Load(FileName)
+	   ; d ##class(%File).%Delete(FileName)
+	}
+	if $d(InfoObject.%data("block")),InfoObject.%data("block")="CspFile" {
+       s FileName=InfoObject.%data("file")
+       set file = ##class(%FileBinaryStream).%New()
+	   set file.Filename = FileName
+	   set status = file.CopyFromAndSave(%request.Content)
+	   s file=""
+	   w !,"File:"_FileName
+	   if status=1   w !,"Save: Ok"
+	   e             w !,"Save: "_status
+	}
+	
+	
+	
+    ;  s overrideTmp=""
+    ;  if $isobject(%request.Content){
+	;     s overrideTmp=overrideTmp_$zcvt(%request.Content.Read(32000),"I","URL")	      
+	;  }	
+	;  w !,"========================",!
+    ;  w overrideTmp
+    ;  zw InfoObject
+	d $zu(5,oldNS)
+    q
+]]></Implementation>
+</Method>
+
+<Method name="CompileContent">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	s json=%request.Get("json","")
+    do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(json,,.InfoObject,1)
+    if InfoObject="" q
+    s:InfoObject.namespace="" InfoObject.namespace=$ZU(5)
+    s oldNS=$zu(5)
+    d $zu(5,InfoObject.namespace)
+	if $d(InfoObject.%data("cacheclass")){
+      s ClassName=InfoObject.%data("cacheclass")
+      d $SYSTEM.OBJ.Compile(ClassName)
+	}
+	if $d(InfoObject.%data("routine")){
+       s ClassName=InfoObject.%data("routine")
+       d $SYSTEM.OBJ.Compile(ClassName)
+	}
+	if $d(InfoObject.%data("url")),$d(InfoObject.%data("rashirenie")),$d(InfoObject.%data("file")){
+        if InfoObject.%data("rashirenie")="csr" {
+		  do $system.CSP.LoadRule(InfoObject.%data("url"),"ck")  
+	    }
+ 	    if InfoObject.%data("rashirenie")="csp" { 
+          d $system.CSP.LoadPage(InfoObject.%data("url"),"ck")
+	    }
+	}
+	; zw InfoObject
+	d $zu(5,oldNS)
+]]></Implementation>
+</Method>
+
+<Method name="RunFragCode">
+<ClassMethod>1</ClassMethod>
+<Implementation><![CDATA[
+	if '$isobject(%request.Content)  q
+	s json=%request.Get("json","")
+    do ##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(json,,.InfoObject,1)
+    if InfoObject="" q
+    s:InfoObject.namespace="" InfoObject.namespace=$ZU(5)
+    s oldNS=$zu(5)
+    d $zu(5,InfoObject.namespace)
+    /*
+    s Code=$zcvt(%request.Content.Read(32000),"I","URL")	      
+    try{
+        x $tr(Code,$c(13,10,9),"  ")
+    } CATCH {
+       w !,!
+       WRITE "$ECODE: ",$ECODE,!
+       zw Code
+    } 
+    */
+        s MacName="TMP.FragCodeDev"_$job_".mac"
+        if ##class(%Routine).Exists(MacName)=1 d ##class(%Routine).Delete(MacName)
+        s readRut=##class(%Routine).%New(MacName)
+        s countLine=0
+        d %request.Content.Rewind()
+        While '%request.Content.AtEnd  {
+	       s frag=$zcvt(%request.Content.ReadLine(),"I","URL")	      
+	       s countLine=countLine+1
+	       continue:countLine=1
+           d readRut.WriteLine(frag)
+        }
+        d readRut.Save()
+        s OldIO=$IO
+        k ^SPOOL($job) 
+        O 2:($job) 
+        U 2:($job)
+        w $$CompileRoutine^%apiRTN(MacName)
+        c 2:($job)  
+        k ^SPOOL($job) 
+        u OldIO
+        s MacName=$e(MacName,1,$l(MacName)-1-$l($p(MacName,".",$l(MacName,"."))))
+        w MacName
+        try{
+           x " d ^"_MacName
+        } CATCH {
+	       ; w !," d ^"_MacName
+           WRITE !,"$ECODE: ",$ECODE
+        } 
+        d ##class(%Routine).Delete(MacName) 
+	    d $zu(5,oldNS)
+	q
+]]></Implementation>
+</Method>
+</Class>
+</Export>
