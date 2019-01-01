@@ -1,14 +1,14 @@
 # CacheWebBuilder (The project is in the process of alpha testing.)
 <!--http://embedyoutube.org/-->
 1) Install class
-   d $SYSTEM.OBJ.Load("%ZDFM.Component.xml","c")
-   d $SYSTEM.OBJ.Load("%ZDFM.demo.xml","c")
-   d $SYSTEM.OBJ.Load("%ZDFM.xml","c")
+   d $SYSTEM.OBJ.Load("%ZWebDFM.Component.xml","c")
+   d $SYSTEM.OBJ.Load("%ZWebDFM.demo.xml","c")
+   d $SYSTEM.OBJ.Load("%ZWebDFM.xml","c")
 
 2) Copy "CacheWebBuilder.exe" to "C:\InterSystems\Cache\bin\"  or to the directory where Cache is installed
 
 3) Set version control to the selected namespace, or to all namespaces.
-   For this you need run in Cache' terminal   d ##class(%ZDFM.SourceControll).InstallSorceControllAllNameSpace()   or w ##class(%Studio.SourceControl.Interface).SourceControlClassSet("%ZDFM.SourceControll",nameSpace)
+   For this you need run in Cache' terminal   d ##class(%ZWebDFM.SourceControll).InstallSorceControllAllNameSpace()   or w ##class(%Studio.SourceControl.Interface).SourceControlClassSet("%ZWebDFM.SourceControll",nameSpace)
 
 4) Restart cache studio
 
